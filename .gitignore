@@ -1,5 +1,3 @@
-# MongoDB Connection link
-backend/config/default.json
 # Logs
 logs
 *.log
