@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import "../App.css";
 import axios from "axios";
-const config = require("../config/config.json")
+const config = require("../config/config.json");
 
 function ShowBookDetails(props) {
 	const [book, setBook] = useState({});
@@ -12,7 +12,7 @@ function ShowBookDetails(props) {
 
 	useEffect(() => {
 		axios
-			.get(config.website + 'api/books/${id}')
+			.get(config.website + `api/books/${id}`)
 			.then((res) => {
 				setBook(res.data);
 			})

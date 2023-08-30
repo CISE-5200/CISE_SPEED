@@ -3,6 +3,7 @@ import "../App.css";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import BookCard from "./BookCard";
+const config = require("../config/config.json");
 
 function ShowBookList() {
 	const [books, setBooks] = useState([]);

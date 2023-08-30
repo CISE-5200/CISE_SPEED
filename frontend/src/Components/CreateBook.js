@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-const config = require("../config/config.json")
 
 import { useNavigate } from "react-router-dom";
+const config = require("../config/config.json");
 
 const CreateBook = (props) => {
 	// Define the state with useState hook
