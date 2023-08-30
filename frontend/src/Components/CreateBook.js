@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+const config = require("../config/config.json")
 
 import { useNavigate } from "react-router-dom";
 
@@ -24,7 +25,7 @@ const CreateBook = (props) => {
 		e.preventDefault();
 
 		axios
-			.post("http://localhost:8082/api/books", book)
+			.post(config.website + "api/books", book)
 			.then((res) => {
 				setBook({
 					title: "",
