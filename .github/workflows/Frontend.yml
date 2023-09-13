@@ -1,1 +1,40 @@
 
+name: Frontend/Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # frontend tests
+      - name: Install React dependencies
+        run: npm ci
+
+      - name: Build React
+        run: npm run build
+        env:
+          CI: false
+
+      - name: Test React
+        run: npm run test
