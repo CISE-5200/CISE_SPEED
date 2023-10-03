@@ -1,10 +1,10 @@
 import { useState, FormEvent, useEffect } from "react";
 import formStyles from "../../styles/Form.module.scss";
 // import users from "./dummdata.json";
-import { withSessionSsr } from "../../lib/withSession";
-import { redirect } from "next/dist/server/api-utils";
+// import { withSessionSsr } from "../../lib/withSession";
+// import { redirect } from "next/dist/server/api-utils";
 
-const login = () => {
+const Login = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState(0);
@@ -67,4 +67,4 @@ const login = () => {
   );
 };
 
-export default login;
+export default Login;
