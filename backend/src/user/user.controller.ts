@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpStatus, Post, Res } from "@nestjs/common";
-import { CreateSubDTO } from "src/dto/create-Sub.dto";
-import { SubmissionService } from "src/modules/submission/submission.service";
+import { CreateSubDTO } from "../dto/create-Sub.dto";
+import { SubmissionService } from "../modules/submission/submission.service";
 
 @Controller("user")
 export class UserController {

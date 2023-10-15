@@ -194,9 +194,13 @@ const config: Config = {
 
   // Whether to use watchman for file crawling
   // watchman: true,
+  preset: 'ts-jest',
+
   transform: {
-    "^.+\\.(ts|js)x?$": "ts-jest",
+    "^.+\\.(ts|js)x?$": ["ts-jest", { tsconfig: "tsconfig.jest.json" }],
   },
+
+  setupFilesAfterEnv: ["@testing-library/jest-dom/"]
 };
 
 export default config;
