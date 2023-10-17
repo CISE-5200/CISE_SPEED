@@ -16,7 +16,7 @@ export default function moderation() {
   }, []);
   useEffect(() => {
     buildSimilarTable();
-  }, [selectedPage]);
+  }, [selectedPage, buildSimilarTable]);
 
   const getSubmissionData = async () => {
     try {
