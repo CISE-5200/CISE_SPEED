@@ -3,9 +3,6 @@ name: Frontend/Tests
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
   build:
@@ -32,8 +29,9 @@ jobs:
         run: npm ci
 
       - name: Build React
-        run: nextbuild
+        run: npm run build
         env:
           CI: false
 
       - name: Test React
+        run: npm run test
