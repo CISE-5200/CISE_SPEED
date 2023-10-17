@@ -34,4 +34,11 @@ export class SubmissionService {
     }
     return null;
   }
+  async findByTitleOrDOI(title: string, doi: string): Promise<Submission[]> {
+    return this.submissionModel
+      .find({
+        $or: [{ title: title }, { doi: doi }],
+      })
+      .exec();
+  }
 }

@@ -5,12 +5,15 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
   Req,
   Res,
 } from "@nestjs/common";
 import { SubmissionService } from "src/modules/submission/submission.service";
 import { AccSubmissionService } from "src/modules/acceptedSubmissions/accSubmission.service";
 import { RejSubmissionService } from "src/modules/rejectedSubmissions/rejSubmission.service";
+import { ArticleService } from "src/modules/Articles/article.service";
+// import "@types/mongoose";
 
 @Controller("moderator")
 export class ModeratorController {
@@ -18,6 +21,7 @@ export class ModeratorController {
     private readonly submissionService: SubmissionService,
     private readonly acceptedService: AccSubmissionService,
     private readonly rejectedService: RejSubmissionService,
+    private readonly articlesService: ArticleService,
   ) {}
   /**
    * get the full list of submissions for moderators
@@ -72,5 +76,54 @@ export class ModeratorController {
       pageRange: [122, 139],
       doi: "10.12345/jcogs.2023.45.3.01",
     });
+  }
+  @Get("/similar/") async getSimilar(
+    @Query("title") title: string,
+    @Query("doi") doi: string,
+  ) {
+    let acceptedSubs = (
+      await this.acceptedService.findByTitleOrDOI(title, doi)
+    ).map((object) => {
+      return {
+        title: object.title,
+        authors: object.authors,
+        date: object.date,
+        journal: object.journal,
+        volume: object.volume,
+        issue: object.issue,
+        doi: object.doi,
+        type: "accepted",
+      };
+    });
+
+    let rejectedSubs = (
+      await this.rejectedService.findByTitleOrDOI(title, doi)
+    ).map((object) => ({
+      title: object.title,
+      authors: object.authors,
+      date: object.date,
+      journal: object.journal,
+      volume: object.volume,
+      issue: object.issue,
+      doi: object.doi,
+      type: "rejected",
+    }));
+
+    let articles = (
+      await this.articlesService.findByTitleOrDOI(title, doi)
+    ).map((object) => ({
+      title: object.title,
+      authors: object.authors,
+      date: object.date,
+      journal: object.journal,
+      volume: object.volume,
+      issue: object.issue,
+      doi: object.doi,
+      type: "article",
+    }));
+
+    const mergedResults = [...acceptedSubs, ...rejectedSubs, ...articles];
+    return mergedResults;
+    // return { acceptedSubs, rejectedSubs, articles };
   }
 }

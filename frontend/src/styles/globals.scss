@@ -1,40 +1,67 @@
 .form {
-	display: flex;
-	flex-direction: column;
-	max-width: 30em;
+  display: flex;
+  flex-direction: column;
+  max-width: 30em;
 }
 .formItem {
-	padding: 1em;
-	margin: 1em 0;
-	flex-grow: 1;
+  padding: 1em;
+  margin: 1em 0;
+  flex-grow: 1;
 }
 .formTextArea {
-	@extend .formItem;
-	min-height: 8em;
+  @extend .formItem;
+  min-height: 8em;
 }
 .arrayItem {
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: stretch;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: stretch;
 }
 .buttonItem {
-	width: 3rem;
-	height: 3rem;
-	flex-grow: 0;
-	font-size: 1.5em;
+  width: 3rem;
+  height: 3rem;
+  flex-grow: 0;
+  font-size: 1.5em;
 }
 td,
 th {
-	border: 1px solid;
-	padding: 0.5em;
+  border: 1px solid;
+  padding: 0.5em;
 }
 @media (prefers-color-scheme: dark) {
-	html {
-		color-scheme: dark;
-	}
-	body {
-		color: #fff;
-		background: #000;
-	}
+  html {
+    color-scheme: dark;
+  }
+  body {
+    color: #fff;
+    background: #000;
+  }
+}
+.header {
+  font-size: 20px;
+  border-top: #fff 2px solid;
+}
+.headerTop {
+  font-size: 20px;
+}
+.reviewTable {
+  border: #fff 2px solid;
+  width: 50%;
+}
+.similarList {
+  width: 50%;
+}
+.flexBox {
+  display: flex;
+}
+.buttonsSection {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding-top: 20px;
+}
+.reviewButton {
+  width: 30%;
+  height: 50px;
 }

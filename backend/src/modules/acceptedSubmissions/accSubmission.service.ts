@@ -19,4 +19,14 @@ export class AccSubmissionService {
   async findAll(): Promise<AccSubmission[]> {
     return this.accSubmissionModel.find().exec();
   }
+  async findByTitleOrDOI(title: string, doi: string): Promise<AccSubmission[]> {
+    console.log("Received title:", title, "Received DOI:", doi);
+    const results = await this.accSubmissionModel
+      .find({
+        $or: [{ title: title }, { doi: doi }],
+      })
+      .exec();
+    console.log("Query results:", results);
+    return results;
+  }
 }
