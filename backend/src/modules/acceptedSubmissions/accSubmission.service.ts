@@ -11,9 +11,9 @@ export class AccSubmissionService {
     private accSubmissionModel: Model<AccSubmission>,
   ) {}
 
-  async create(createCatDto: CreateSubDTO): Promise<AccSubmission> {
-    const createdCat = new this.accSubmissionModel(createCatDto);
-    return createdCat.save();
+  async create(createSubDto: CreateSubDTO): Promise<AccSubmission> {
+    const createdSub = new this.accSubmissionModel(createSubDto);
+    return createdSub.save();
   }
 
   async findAll(): Promise<AccSubmission[]> {
