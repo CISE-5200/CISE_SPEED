@@ -3,6 +3,19 @@ import formStyles from "../styles/Form.module.scss";
 import data from "../utils/dummydata.json"; // TODO: fetch database data.
 import ArticleTable, {ArticlesInterface} from "@/components/table/ArticleTable";
 
+function onlyUnique(value: any, index: number, array: any[]) 
+{
+	return array.indexOf(value) === index;
+}
+
+interface MethodInterface // TODO: allow methods to be added
+{
+	id: string;
+	name: string;
+};
+
+const methods: MethodInterface[] = [{id: 'TDD', name: 'TDD'}, {id: 'MP', name: 'Mob Programming'}, {id: 'AT', name: 'Automated Testing'}];
+
 const SearchPage = () => {
 	const currentYear = new Date().getFullYear();
     const [pubYear, setPubYear] = useState<number>(currentYear);
@@ -16,7 +29,6 @@ const SearchPage = () => {
     	let formObject = Object.fromEntries(formData.entries());
 
 		let method = formObject.method;
-		let pubYear = formObject.pubYear;
 
 		let filteredArticles: ArticlesInterface[] = data.articles.filter((article) => article.method === method).map(article => article as ArticlesInterface);
 		setFilteredArticles(filteredArticles);
@@ -30,40 +42,19 @@ const SearchPage = () => {
 			<div className ="container">
 				<h1>Search for Articles</h1>
 				<form className={formStyles.dropDown} onSubmit={onSearchFormSubmit} action="#">
-					<table style="border-collapse: collapse;">
-						<tr>
-							<th>Select method</th>
-							<th>Filter results by Year</th>
-						</tr>
-						<tr>
-							<td>
-								<select id="methods" name="method" onChange={this.form.submit()}>
-									<option value="TDD">TDD</option>
-									<option value="Mob Programming">Mob Programming</option>
-									<option value="Automated Testing">Automated Testing</option>
-								</select>
-							</td>
-							<td>
-								<input
-									className={formStyles.formItem}
-									type="number"
-									name="pubYear"
-									id="pubYear"
-									value={pubYear}
-									onChange={(event) => {
-									const val = event.target.value;
-									if (val === "") {
-										setPubYear(currentYear);
-										setFilteredArticlesByYear(null);
-									} else {
-										setPubYear(parseInt(val));
-										setFilteredArticlesByYear(filteredArticles.filter((article) => article.pubYear === pubYear));
-									}
-								}}
-								/>
-							</td>
-						</tr>
-					</table>
+					<label htmlFor="method">Select Method:</label>
+					<select id="methods" name="method">
+						{methods.map((method) =>
+						{
+							return (
+								<option value={method.id}>{method.name}</option>
+							);
+						})}
+					</select>
+					
+					<button className={formStyles.formItem} type="submit">
+						Search
+					</button>
 				</form>
 
 
@@ -73,13 +64,49 @@ const SearchPage = () => {
 	}
 	else
 	{
+		const onYearChanged = (event: React.FormEvent<HTMLSelectElement>) =>
+		{
+			let value = parseInt(event.currentTarget.value);
+
+			if(isNaN(value))
+			{
+				setFilteredArticlesByYear(null);
+			}
+			else
+			{
+				setFilteredArticlesByYear(filteredArticles.filter((article) => article.pubyear == parseInt(event.currentTarget.value)));
+			}
+		};
+
+		const filteredArticlesYears = filteredArticles.map((article) => article.pubyear).filter(onlyUnique);
+
 		return (
 			<div className="container">
 				<h1>Articles</h1>
-
-				<ArticleTable articles={filteredArticles}/>
 				
-				<form className={formStyles.dropDown} onSubmit={() => setFilteredArticles(null)} action="#">
+				{filteredArticles !== null && filteredArticles.length > 0 && 
+					<>
+						<label htmlFor="pubYear">Filter by Year: </label>
+
+						<select id="pubYear" name="pubYear" onChange={onYearChanged}>
+							<option value="all">All Years</option>
+							{filteredArticlesYears.sort((a, b) => a < b ? 1 : -1).map((year) =>
+							{
+								return (
+									<option value={year}>{year}</option>
+								);
+							})}
+						</select>
+						<br/>
+					</>
+				}
+
+				<ArticleTable articles={filteredArticlesByYear === null ? filteredArticles : filteredArticlesByYear}/>
+				
+				<form className={formStyles.dropDown} onSubmit={() => {
+					setFilteredArticles(null);
+					setFilteredArticlesByYear(null);
+				}} action="#">
 					<button className={formStyles.formItem} type="submit">
 						Go Back
 					</button>

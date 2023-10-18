@@ -5,10 +5,11 @@ export interface ArticlesInterface {
 	title: string;
 	authors: string;
 	source: string;
-	pubyear: string;
+	pubyear: number;
 	doi: string;
 	claim: string;
 	evidence: string;
+	method: string;
 }
 
 export type ArticlesProps = {
