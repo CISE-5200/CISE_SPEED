@@ -18,4 +18,12 @@ export class ArticleService {
   async findAll(): Promise<Article[]> {
     return this.ArticleModel.find().exec();
   }
+  async findByTitleOrDOI(title: string, doi: string): Promise<Article[]> {
+    console.log("Received title:", title, "Received DOI:", doi);
+    const results = await this.ArticleModel.find({
+      $or: [{ title: title }, { doi: doi }],
+    }).exec();
+    console.log("Query results:", results);
+    return results;
+  }
 }
