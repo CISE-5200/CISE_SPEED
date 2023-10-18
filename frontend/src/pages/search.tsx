@@ -17,10 +17,9 @@ interface MethodInterface // TODO: allow methods to be added
 const methods: MethodInterface[] = [{id: 'TDD', name: 'TDD'}, {id: 'MP', name: 'Mob Programming'}, {id: 'AT', name: 'Automated Testing'}];
 
 const SearchPage = () => {
-	const currentYear = new Date().getFullYear();
-    const [pubYear, setPubYear] = useState<number>(currentYear);
 	const [filteredArticles, setFilteredArticles] = useState<ArticlesInterface[] | null>(null);
 	const [filteredArticlesByYear, setFilteredArticlesByYear] = useState<ArticlesInterface[] | null>(null);
+	const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
 
 	const onSearchFormSubmit = (event: React.FormEvent<HTMLFormElement>) =>
 	{
@@ -29,6 +28,7 @@ const SearchPage = () => {
     	let formObject = Object.fromEntries(formData.entries());
 
 		let method = formObject.method;
+		setSelectedMethod(method.toString());
 
 		let filteredArticles: ArticlesInterface[] = data.articles.filter((article) => article.method === method).map(article => article as ArticlesInterface);
 		setFilteredArticles(filteredArticles);
@@ -43,7 +43,7 @@ const SearchPage = () => {
 				<h1>Search for Articles</h1>
 				<form className={formStyles.dropDown} onSubmit={onSearchFormSubmit} action="#">
 					<label htmlFor="method">Select Method:</label>
-					<select id="methods" name="method">
+					<select id="methods" name="method" defaultValue={selectedMethod !== null ? selectedMethod : methods[0].name}>
 						{methods.map((method) =>
 						{
 							return (
