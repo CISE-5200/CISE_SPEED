@@ -18,4 +18,19 @@ export class UserController {
       return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ err });
     }
   }
+
+  @Get("/list") async GetArticles(
+    @Res() response
+  ) {
+    try {
+      const articles = await this.submissionService.findAll();
+      return response.status(HttpStatus.OK).json({
+        articles,
+      });
+    }
+    catch (err)
+    {
+      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ err });
+    }
+  }
 }
