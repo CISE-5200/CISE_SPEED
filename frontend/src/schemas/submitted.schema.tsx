@@ -1,4 +1,5 @@
-export class CreateSubDTO {
+export type submission = {
+  readonly _id: string;
   title: string;
   authors: string[];
   date: string;
@@ -7,4 +8,5 @@ export class CreateSubDTO {
   issue: number;
   pageRange: [number, number];
   doi: string;
-}
+  summary: string;
+};

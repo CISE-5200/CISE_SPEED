@@ -11,12 +11,22 @@ export class AccSubmissionService {
     private accSubmissionModel: Model<AccSubmission>,
   ) {}
 
-  async create(createCatDto: CreateSubDTO): Promise<AccSubmission> {
-    const createdCat = new this.accSubmissionModel(createCatDto);
-    return createdCat.save();
+  async create(createSubDto: CreateSubDTO): Promise<AccSubmission> {
+    const createdSub = new this.accSubmissionModel(createSubDto);
+    return createdSub.save();
   }
 
   async findAll(): Promise<AccSubmission[]> {
     return this.accSubmissionModel.find().exec();
+  }
+  async findByTitleOrDOI(title: string, doi: string): Promise<AccSubmission[]> {
+    console.log("Received title:", title, "Received DOI:", doi);
+    const results = await this.accSubmissionModel
+      .find({
+        $or: [{ title: title }, { doi: doi }],
+      })
+      .exec();
+    console.log("Query results:", results);
+    return results;
   }
 }
