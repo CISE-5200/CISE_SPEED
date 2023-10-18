@@ -1,34 +1,31 @@
 import { GetStaticProps, NextPage } from "next";
-import ArticleTable, {ArticlesProps} from "@/components/table/ArticleTable";
-import data from "../../utils/dummydata.json";
+import ArticleTable, {ArticlesInterface, ArticlesProps} from "@/components/table/ArticleTable";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import BACKEND_URL from "@/global";
 
-const Articles: NextPage<ArticlesProps> = ({ articles }) => {
+const ArticlesPage: NextPage<ArticlesProps> = () => {
+	const [articleData, setArticleData] = useState<ArticlesInterface[]>();
+
+	useEffect(() => {
+		getArticleData();
+	}, []);
+
+	const getArticleData = async () => {
+		try {
+			const response = await axios.get(`${BACKEND_URL}/user/list`);
+		  	setArticleData(response.data.articles);
+		} catch (error) {
+		  console.log(error);
+		}
+	  };
+
 	return (
 		<div className="container">
 			<h1>Articles Index Page</h1>
-			<p>Page containing a table of articles:</p>
-			<ArticleTable articles={articles}/>
+			<ArticleTable articles={articleData}/>
 		</div>
 	);
 };
 
-export const getStaticProps: GetStaticProps<ArticlesProps> = async (_) => {
-	// Map the data to ensure all articles have consistent property names
-	const articles = data.articles.map((article) => ({
-		id: article.id ?? article._id,
-		title: article.title,
-		authors: article.authors,
-		source: article.source,
-		pubyear: article.pubyear,
-		doi: article.doi,
-		claim: article.claim,
-		evidence: article.evidence,
-	}));
-	return {
-		props: {
-			articles,
-		},
-	};
-};
-
-export default Articles;
+export default ArticlesPage;

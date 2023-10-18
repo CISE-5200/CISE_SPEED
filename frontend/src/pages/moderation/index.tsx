@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { submission } from "@/schemas/submitted.schema";
 import axios from "axios";
 import "../../styles/globals.scss";
-const BACKEND = "http://localhost:3001";
+import BACKEND_URL from "@/global";
 
 export default function moderation() {
   const [submissionData, setSubmissionData] = useState<submission[]>([]);
@@ -20,7 +20,7 @@ export default function moderation() {
 
   const getSubmissionData = async () => {
     try {
-      const response = await axios.get(`${BACKEND}/moderator/`);
+      const response = await axios.get(`${BACKEND_URL}/moderator/`);
       setSubmissionData(await response.data.submissions);
     } catch (error) {
       console.log(error);
@@ -29,7 +29,7 @@ export default function moderation() {
 
   const handleApprove = async (_id: string) => {
     try {
-      await axios.post(`${BACKEND}/moderator/approve/`, { _ID: _id });
+      await axios.post(`${BACKEND_URL}/moderator/approve/`, { _ID: _id });
       getSubmissionData();
       setModerationSection(true);
       setSelectedPage(undefined);
@@ -40,7 +40,7 @@ export default function moderation() {
 
   const handleDeny = async (_ID: string) => {
     try {
-      await axios.post(`${BACKEND}/moderator/deny`, { _ID });
+      await axios.post(`${BACKEND_URL}/moderator/deny`, { _ID });
       getSubmissionData();
       setModerationSection(true);
       setSelectedPage(undefined);
@@ -111,7 +111,7 @@ export default function moderation() {
     if (!selectedPage) return;
 
     try {
-      const response = await axios.get(`${BACKEND}/moderator/similar/`, {
+      const response = await axios.get(`${BACKEND_URL}/moderator/similar/`, {
         params: { title: selectedPage.title, doi: selectedPage.doi },
       });
       console.log("similar items:", response.data);

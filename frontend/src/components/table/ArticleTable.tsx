@@ -1,14 +1,18 @@
-import SortableTable from "./SortableTable";
+import SortableTable, {DisplayFunction} from "./SortableTable";
 
-export interface ArticlesInterface {
-	id: string;
+export interface ArticlesInterface {	
 	title: string;
 	authors: string;
-	source: string;
-	pubyear: number;
+	date: Date;
+	journal: string;
+	volume: number;
+	issue: number;
+	pageRange: [number, number];
 	doi: string;
+
 	claim: string;
 	evidence: string;
+
 	method: string;
 }
 
@@ -16,20 +20,24 @@ export type ArticlesProps = {
 	articles: ArticlesInterface[];
 };
 
-const ArticleTable = (props: {articles: ArticlesInterface[]}) => {
+const ArticleTable = (props: {articles: ArticlesInterface[] | undefined}) => {
 	const { articles } = props;
 	
-	const headers: { key: keyof ArticlesInterface; label: string }[] = [
+	const headers: { key: keyof ArticlesInterface; label: string; display?: DisplayFunction | undefined }[] = [
 		{ key: "title", label: "Title" },
 		{ key: "authors", label: "Authors" },
-		{ key: "source", label: "Source" },
-		{ key: "pubyear", label: "Publication Year" },
+		{ key: "date", label: "Publication Date", display: (date: Date) => date.toString() },
+		{ key: "journal", label: "Journal" },
+		{ key: "volume", label: "Volume" },
+		{ key: "issue", label: "Issue" },
+		{ key: "pageRange", label: "Pages", display: (pages: [number, number]) => pages[0] + " \u2012 " + pages[1]},
 		{ key: "doi", label: "DOI" },
 		{ key: "claim", label: "Claim" },
 		{ key: "evidence", label: "Evidence" },
+		{ key: "method", label: "Method" }
 	];
 
-	if(articles.length > 0)
+	if(articles !== undefined && articles.length > 0)
 	{
 		return (
 			<div className="container">

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import formStyles from "../styles/Form.module.scss";
-import data from "../utils/dummydata.json"; // TODO: fetch database data.
 import ArticleTable, {ArticlesInterface} from "@/components/table/ArticleTable";
+import BACKEND_URL from "@/global";
+import axios from "axios";
 
 function onlyUnique(value: any, index: number, array: any[]) 
 {
@@ -21,6 +22,21 @@ const SearchPage = () => {
 	const [filteredArticlesByYear, setFilteredArticlesByYear] = useState<ArticlesInterface[] | null>(null);
 	const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
 
+	const [articleData, setArticleData] = useState<ArticlesInterface[]>();
+
+	useEffect(() => {
+		getArticleData();
+	}, []);
+
+	const getArticleData = async () => {
+		try {
+			const response = await axios.get(`${BACKEND_URL}/user/list`);
+		  	setArticleData(response.data.articles);
+		} catch (error) {
+		  console.log(error);
+		}
+	  };
+
 	const onSearchFormSubmit = (event: React.FormEvent<HTMLFormElement>) =>
 	{
 		event.preventDefault();
@@ -30,11 +46,12 @@ const SearchPage = () => {
 		let method = formObject.method;
 		setSelectedMethod(method.toString());
 
-		let filteredArticles: ArticlesInterface[] = data.articles.filter((article) => article.method === method).map(article => article as ArticlesInterface);
-		setFilteredArticles(filteredArticles);
+		if(articleData !== undefined)
+		{
+			let filteredArticles: ArticlesInterface[] = articleData.filter((article) => article.method === method).map(article => article as ArticlesInterface);
+			setFilteredArticles(filteredArticles);
+		}
 	};
-
-	// TODO: change pub year input to select box and get all distinct years and map to dropbox entry HTML. Have a "All Years" option too.
 
 	if(filteredArticles === null)
 	{
@@ -74,11 +91,11 @@ const SearchPage = () => {
 			}
 			else
 			{
-				setFilteredArticlesByYear(filteredArticles.filter((article) => article.pubyear == parseInt(event.currentTarget.value)));
+				setFilteredArticlesByYear(filteredArticles.filter((article) => article.date.getFullYear() === parseInt(event.currentTarget.value)));
 			}
 		};
 
-		const filteredArticlesYears = filteredArticles.map((article) => article.pubyear).filter(onlyUnique);
+		const filteredArticlesYears = filteredArticles.map((article) => article.date.getFullYear()).filter(onlyUnique);
 
 		return (
 			<div className="container">
