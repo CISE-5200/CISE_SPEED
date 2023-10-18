@@ -51,6 +51,10 @@ const SearchPage = () => {
 			let filteredArticles: ArticlesInterface[] = articleData.filter((article) => article.method === method).map(article => article as ArticlesInterface);
 			setFilteredArticles(filteredArticles);
 		}
+		else
+		{
+			setFilteredArticles([]);
+		}
 	};
 
 	if(filteredArticles === null)
