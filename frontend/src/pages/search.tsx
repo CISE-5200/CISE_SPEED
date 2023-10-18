@@ -47,7 +47,7 @@ const SearchPage = () => {
 						{methods.map((method) =>
 						{
 							return (
-								<option value={method.id}>{method.name}</option>
+								<option key={method.id} value={method.id}>{method.name}</option>
 							);
 						})}
 					</select>
@@ -93,7 +93,7 @@ const SearchPage = () => {
 							{filteredArticlesYears.sort((a, b) => a < b ? 1 : -1).map((year) =>
 							{
 								return (
-									<option value={year}>{year}</option>
+									<option key={year} value={year}>{year}</option>
 								);
 							})}
 						</select>
