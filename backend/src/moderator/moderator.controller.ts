@@ -1,5 +1,5 @@
 import { Controller, Get, HttpStatus, Param, Res } from "@nestjs/common";
-import { SubmissionService } from "../modules/submission/submission.service";
+import { SubmissionService } from "src/modules/submission/submission.service";
 
 @Controller("moderator")
 export class ModeratorController {

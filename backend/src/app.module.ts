@@ -11,7 +11,7 @@ import {
 import {
   AccSubmission,
   AccSubmissionSchema,
-} from "./modules/acceptedSubmissions/accSubmission.schema";
+} from "./modules/acceptedSubmissions/accsubmission.schema";
 import {
   RejSubmission,
   RejSubmissionSchema,
