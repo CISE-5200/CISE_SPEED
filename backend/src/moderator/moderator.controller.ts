@@ -9,10 +9,10 @@ import {
   Req,
   Res,
 } from "@nestjs/common";
-import { SubmissionService } from "src/modules/submission/submission.service";
-import { AccSubmissionService } from "src/modules/acceptedSubmissions/accSubmission.service";
-import { RejSubmissionService } from "src/modules/rejectedSubmissions/rejSubmission.service";
-import { ArticleService } from "src/modules/Articles/article.service";
+import { SubmissionService } from "../modules/submission/submission.service";
+import { AccSubmissionService } from "../modules/acceptedSubmissions/accSubmission.service";
+import { RejSubmissionService } from "../modules/rejectedSubmissions/rejSubmission.service";
+import { ArticleService } from "../modules/Articles/article.service";
 // import "@types/mongoose";
 
 @Controller("moderator")
