@@ -78,7 +78,7 @@ export const GetUser = async (): Promise<UserType> => {
 
 type AuthCallback = (user: UserType) => void;
 
-export class AuthManager
+class AuthManager
 {
     private static callbacks: AuthCallback[] = [];
 
