@@ -24,6 +24,8 @@ import { AnalystController } from "./analyst/analyst.controller";
 import { AccSubmissionService } from "./modules/acceptedSubmissions/accSubmission.service";
 import { RejSubmissionService } from "./modules/rejectedSubmissions/rejSubmission.service";
 import { ArticleService } from "./modules/Articles/article.service";
+import { Session, SessionSchema, User, UserSchema } from "./modules/user/user.schema";
+import { UserService } from "./modules/user/user.service";
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import { ArticleService } from "./modules/Articles/article.service";
       },
     ]),
     MongooseModule.forFeature([{ name: Article.name, schema: ArticleSchema }]),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema}]),
+    MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
   ],
   controllers: [
     AppController,
@@ -56,6 +60,7 @@ import { ArticleService } from "./modules/Articles/article.service";
     AccSubmissionService,
     RejSubmissionService,
     ArticleService,
+    UserService
   ],
 })
 export class AppModule {}

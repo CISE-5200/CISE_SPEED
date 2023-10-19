@@ -1,51 +1,67 @@
 import { useState, FormEvent, useEffect } from "react";
 import formStyles from "../../styles/Form.module.scss";
-// import users from "./dummdata.json";
-// import { withSessionSsr } from "../../lib/withSession";
-// import { redirect } from "next/dist/server/api-utils";
+import { Login, LoginResponse } from "../../lib/auth";
+import { useRouter } from "next/router";
 
-const Login = () => {
-  const [userName, setUserName] = useState("");
+const LoginPage = () => {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [userType, setUserType] = useState(0);
-  const [loginValid, setLoginValid] = useState(true);
-  interface User {
-    userName: string;
-    password: string;
-    userType: number;
-  }
-  interface Props {
-    username: string;
-  }
+  const [loginValid, setLoginValid] = useState<boolean | null>(null);
+  const [loginMessage, setLoginMessage] = useState("");
+  const router = useRouter();
+  
   /**
    * submit button handler for login page
    * looks up user name and password and finds if user if found
    * @param event Form event object for preventing default action
    */
   const submitLogin = async (event: FormEvent<HTMLFormElement>) => {
-    const query = await fetch("localhost:3000/api/login", {
-      headers: { userName: userName, password: password },
-    });
-    const responce = await query.json();
-    console.log(responce);
+    event.preventDefault();
+
+    try
+    {
+      let response: LoginResponse = await Login({
+        username: username,
+        password: password,
+      });
+
+      setLoginValid(response.success);
+
+      if(response.success)
+      {
+        setTimeout(() => {
+          router.push('/');
+        }, 1000);
+      }
+      else if(response.message !== undefined)
+      {
+        setLoginMessage(response.message);
+      }
+    } catch(err) {
+      setLoginValid(false);
+    }
   };
 
   const errorMsg = (
-    <div>User not found, please check your details and try again</div>
+    <div>{loginMessage}</div>
+  );
+
+  const successMsg = (
+    <div>Login successful, welcome back {username}.</div>
   );
 
   return (
     <div>
       <h1>Login</h1>
-      <form className={formStyles.form} onSubmit={submitLogin}>
+      <form className={formStyles.form} onSubmit={submitLogin} action="#">
         <input
           className={formStyles.formItem}
           type="text"
           name="userName"
           placeholder="User Nane"
-          value={userName}
+          value={username}
           onChange={(Event) => {
-            setUserName(Event.target.value);
+            setUsername(Event.target.value);
           }}
         />
         <input
@@ -62,9 +78,10 @@ const Login = () => {
           Submit
         </button>
       </form>
-      {!loginValid && errorMsg}
+      {loginValid !== null && !loginValid && errorMsg}
+      {loginValid !== null && loginValid && successMsg}
     </div>
   );
 };
 
-export default Login;
+export default LoginPage;
