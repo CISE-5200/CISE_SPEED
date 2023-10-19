@@ -26,6 +26,13 @@ describe('UserController', () => {
             find: jest.fn(),
             findOne: jest.fn(),
           }
+        },
+        {
+          provide: getModelToken('Session'),
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
+          }
         }
       ]
     }).compile();
