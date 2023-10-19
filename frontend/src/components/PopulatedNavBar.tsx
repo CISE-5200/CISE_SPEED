@@ -2,8 +2,7 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import NavBar from "./nav/NavBar";
 import NavDropdown from "./nav/NavDropdown";
 import NavItem from "./nav/NavItem";
-import { GetUser, User, Role, useAuth } from "@/lib/auth";
-import { useEffect, useState } from "react";
+import { Role, useAuth } from "@/lib/auth";
 
 const PopulatedNavBar = () => {
   const user = useAuth();

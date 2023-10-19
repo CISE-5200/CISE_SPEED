@@ -32,25 +32,33 @@ export interface User {
 }
 
 export const Login = async (request: LoginRequest) : Promise<LoginResponse> => {
-    const response = await axios.post(`${BACKEND_URL}/user/login`, request);
-    let data = response.data;
-
-    let success = data.success;
-
-    if(!success)
+    try
     {
-        return data;
+        const response = await axios.post(`${BACKEND_URL}/user/login`, request);
+        let data = response.data;
+
+        let success = data.success;
+
+        if(!success)
+        {
+            return data;
+        }
+
+        let session: Session = data.session;
+        setCookie('session', session, { secure: true });
+
+        AuthManager.notify(session.user);
+
+        return {
+            success: data.success,
+            user: session.user,
+        };
+    } catch(err) {
+        return {
+            success: false,
+            message: "Failed to authenticate user.",
+        };
     }
-
-    let session: Session = data.session;
-    setCookie('session', session, { secure: true });
-
-    AuthManager.notify(session.user);
-
-    return {
-        success: data.success,
-        user: session.user,
-    };
 };
 
 export const Logout = async () => {
@@ -60,20 +68,24 @@ export const Logout = async () => {
 
 type UserType = User | null;
 
-export const GetUser = async (): Promise<UserType> => {
+const GetUser = async (): Promise<UserType> => {
     if(!hasCookie('session'))
         return null;
 
     let sessionCookie = getCookie('session', { secure: true })  as string;
     const session: Session = JSON.parse(sessionCookie) as Session;
 
-    const response = await axios.get(`${BACKEND_URL}/user/auth?username=${session.user.username}&token=${session.token}`);
-    const data = response.data;
-
-    if(!data.success)
+    try {
+        const response = await axios.get(`${BACKEND_URL}/user/auth?username=${session.user.username}&token=${session.token}`);
+        const data = response.data;
+    
+        if(!data.success)
+            return null;
+    
+        return data.user;
+    } catch (err) {
         return null;
-
-    return data.user;
+    }
 }
 
 type AuthCallback = (user: UserType) => void;
@@ -81,10 +93,17 @@ type AuthCallback = (user: UserType) => void;
 class AuthManager
 {
     private static callbacks: AuthCallback[] = [];
+    private static interval: NodeJS.Timeout;
 
     public static subscribe(callback: AuthCallback)
     {
         AuthManager.callbacks.push(callback);
+    }
+
+    private static check() {
+        GetUser().then((user) => {
+            this.notify(user);
+        });
     }
 
     public static notify(user: UserType)
@@ -92,6 +111,17 @@ class AuthManager
         this.callbacks.forEach(callback => {
             callback(user);
         });
+
+        if(user !== undefined && user !== null)
+        {
+            this.interval = setInterval(() => {
+                this.check();
+            }, 60 * 1000);
+        }
+        else
+        {
+            clearInterval(this.interval);
+        }
     }
 };
 
