@@ -39,9 +39,7 @@ export const Login = async (request: LoginRequest) : Promise<LoginResponse> => {
 
     if(!success)
     {
-        return {
-            success: false,
-        };
+        return data;
     }
 
     let session: Session = data.session;
