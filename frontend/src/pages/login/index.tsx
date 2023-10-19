@@ -66,7 +66,7 @@ const LoginPage = () => {
         />
         <input
           className={formStyles.formItem}
-          type="text"
+          type="password"
           name="password"
           placeholder="Password"
           value={password}
