@@ -1,6 +1,7 @@
 import BACKEND_URL from "@/global";
 import axios from "axios";
 import { deleteCookie, getCookie, hasCookie, setCookie } from "cookies-next";
+import { GetServerSidePropsContext } from "next";
 import { useState, useEffect } from "react";
 
 export enum Role {
@@ -98,12 +99,20 @@ export const Logout = async () => {
 
 type UserType = User | null;
 
-const GetUser = async (): Promise<UserType> => {
+const GetUser = async(): Promise<UserType> => {
     if(!hasCookie('session'))
         return null;
 
     let sessionCookie = getCookie('session', { secure: true })  as string;
-    const session: Session = JSON.parse(sessionCookie) as Session;
+
+    if(sessionCookie === undefined)
+        return null;
+
+    return GetUserFromSession(sessionCookie);
+};
+
+const GetUserFromSession = async (sessionStr: string): Promise<UserType> => {
+    const session: Session = JSON.parse(sessionStr) as Session;
 
     try {
         const response = await axios.get(`${BACKEND_URL}/user/auth?username=${session.user.username}&token=${session.token}`);
@@ -117,6 +126,15 @@ const GetUser = async (): Promise<UserType> => {
         return null;
     }
 }
+
+export const GetUserFromContext = async(ctx: GetServerSidePropsContext): Promise<UserType> => {
+    let sessionCookie = ctx.req.cookies['session'];
+
+    if(sessionCookie === undefined)
+        return null;
+
+    return GetUserFromSession(sessionCookie);
+};
 
 type AuthCallback = (user: UserType) => void;
 
