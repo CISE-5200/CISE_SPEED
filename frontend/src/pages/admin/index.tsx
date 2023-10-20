@@ -1,5 +1,5 @@
 import SortableTable, { DisplayFunction } from "@/components/table/SortableTable";
-import { RequestType, Role, User, getServerSidePropsWithAuth, makeAuthRequest, useAuth, useAuthRequest } from "@/lib/auth";
+import { RequestType, Role, User, getServerSidePropsWithAuth, makeAuthRequest, useAuth, useAuthRequest, useRequest } from "@/lib/auth";
 import { GetServerSideProps, NextPage } from "next";
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -7,6 +7,7 @@ import 'react-tabs/style/react-tabs.css';
 
 import { useState, useEffect } from "react";
 import Popup from "@/components/popup/Popup";
+import ArticleTable, { ArticlesInterface, QueryFunction } from "@/components/table/ArticleTable";
 
 const UserTable = (props: { adminUser: User | null, users: User[] | null }) => {
   const { adminUser } = props;
@@ -108,9 +109,44 @@ const UserTable = (props: { adminUser: User | null, users: User[] | null }) => {
   }
 }
 
+const AdminArticleTable = () => {
+  const articlesResponse = useRequest('/user/list', RequestType.GET);
+
+  const [articleQuery, setArticleQuery] = useState<QueryFunction | undefined>(undefined);
+
+  const articleActions: { label?: string; action: any; }[] = [
+    {
+      action: (article: ArticlesInterface) => (
+        <>
+          <button>Edit</button>
+        </>
+      )
+    }
+  ];
+
+  const articleSearch = (event: React.FormEvent<HTMLInputElement>) => {
+    let searchQuery = event.currentTarget.value;
+
+    let query: QueryFunction = (article: ArticlesInterface): boolean => { 
+      return article !== undefined && article.title.toLowerCase().startsWith(searchQuery.toLowerCase());
+    };
+
+    setArticleQuery(() => query);
+  };
+
+  return (
+    <>
+      <input type="text" placeholder="Search for an article..." onInput={articleSearch}/>
+      <ArticleTable articles={articlesResponse?.articles} actions={articleActions} query={articleQuery}/>
+    </>
+  );
+};
+
 const AdminPage: NextPage = () => {
   const user = useAuth();
+
   const usersReponse = useAuthRequest('/user/users', RequestType.GET);
+
 
   return (
     <div className="container">
@@ -126,7 +162,7 @@ const AdminPage: NextPage = () => {
           <UserTable adminUser={user} users={usersReponse?.users}/>
         </TabPanel>
         <TabPanel>
-          Tab 3
+          <AdminArticleTable/>
         </TabPanel>
         <TabPanel>
           Tab 4

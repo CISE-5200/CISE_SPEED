@@ -20,8 +20,10 @@ export type ArticlesProps = {
 	articles: ArticlesInterface[];
 };
 
-const ArticleTable = (props: {articles: ArticlesInterface[] | undefined}) => {
-	const { articles } = props;
+export type QueryFunction = (object: any) => boolean;
+
+const ArticleTable = (props: {articles: ArticlesInterface[] | undefined, actions?: { label?: string; action: any; }[], query?: QueryFunction}) => {
+	const { articles, actions, query } = props;
 	
 	const headers: { key: keyof ArticlesInterface; label: string; display?: DisplayFunction | undefined }[] = [
 		{ key: "title", label: "Title" },
@@ -37,11 +39,13 @@ const ArticleTable = (props: {articles: ArticlesInterface[] | undefined}) => {
 		{ key: "method", label: "Method" }
 	];
 
-	if(articles !== undefined && articles.length > 0)
+	const filteredArticles = articles?.filter((article) => query === undefined || query(article));
+
+	if(filteredArticles !== undefined && filteredArticles.length > 0)
 	{
 		return (
 			<div className="container">
-				<SortableTable headers={headers} data={articles}/>
+				<SortableTable headers={headers} data={filteredArticles} actions={actions}/>
 			</div>
 		);
 	}

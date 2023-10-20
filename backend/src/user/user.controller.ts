@@ -19,6 +19,7 @@ export class UserController {
     try {
       const newSubmission = await this.submissionService.create(CreateSubDTO);
       return response.status(HttpStatus.CREATED).json({
+        success: true,
         newSubmission,
       });
     } catch (err) {
@@ -32,6 +33,7 @@ export class UserController {
     try {
       const articles = await this.submissionService.findAll();
       return response.status(HttpStatus.OK).json({
+        success: true,
         articles,
       });
     }

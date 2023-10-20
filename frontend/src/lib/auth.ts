@@ -223,7 +223,7 @@ export const makeAuthRequest = async (uri: string, reqType: RequestType, user: U
         }
         catch (err)
         {
-            
+
         }
 
         if(response !== null && response.data.success)
@@ -269,6 +269,39 @@ export const useAuthRequest = (uri: string, reqType: RequestType, user: UserType
                     });
                     break;
             }
+        }
+    }, []);
+
+    return responseData;
+}
+
+export const useRequest = (uri: string, reqType: RequestType, data: any = {}) : any => {
+    const [responseData, setResponseData] = useState(null);
+
+    useEffect(() => {
+        const handleData = (responseData: any) => {
+            if(!responseData.success)
+            {
+                setResponseData(null);
+            }
+            else
+            {
+                setResponseData(responseData);
+            }
+        };
+
+        switch(reqType)
+        {
+            case RequestType.POST:
+                axios.post(`${BACKEND_URL}${uri}`, data).then((response) => {
+                    handleData(response.data);
+                });
+                break;
+            case RequestType.GET:
+                axios.get(`${BACKEND_URL}${uri}`).then((response) => {
+                    handleData(response.data);
+                });
+                break;
         }
     }, []);
 
