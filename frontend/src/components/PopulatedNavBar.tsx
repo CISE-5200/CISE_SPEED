@@ -10,12 +10,6 @@ const PopulatedNavBar = () => {
   return (
     <NavBar>
       <NavItem route="/">SPEED</NavItem>
-      
-      {user !== null && user.role < Role.MODERATOR && (
-        <NavItem route="/moderation" end>
-          Moderation
-        </NavItem>
-      )}
 
       <NavItem end>{"\u0000"}</NavItem>
 
@@ -37,6 +31,24 @@ const PopulatedNavBar = () => {
         <NavItem dropdown>
           {user.username} <IoMdArrowDropdown />
           <NavDropdown>
+            {user.role == Role.MODERATOR && (
+              <NavItem route="/moderation">
+                Moderation
+              </NavItem>
+            )}
+
+            {user.role == Role.ANALYST && (
+              <NavItem route="/analyst">
+                Analysis
+              </NavItem>
+            )}
+
+            {user.role == Role.ADMIN && (
+              <NavItem route="/admin">
+                Administration
+              </NavItem>
+            )}
+
             <NavItem route="/logout">
               Log Out
             </NavItem>
