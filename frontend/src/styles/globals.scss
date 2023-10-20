@@ -65,3 +65,18 @@ th {
   width: 30%;
   height: 50px;
 }
+.info-box {
+  padding: 0.5em;
+}
+
+.info-box.success {
+  background-color: lightgreen;
+  color: white;
+  font-weight: bold;
+}
+
+.info-box.error {
+  background-color: lightcoral;
+  color: white;
+  font-weight: bold;
+}

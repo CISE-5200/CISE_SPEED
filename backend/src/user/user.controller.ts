@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Res, Req, Query } from "@nestjs/common";
+import { Body, Controller, Get, HttpStatus, Post, Res, Query } from "@nestjs/common";
 import { CreateSubDTO } from "../dto/create-Sub.dto";
 import { SubmissionService } from "../modules/submission/submission.service";
 import { UserService } from "../modules/user/user.service";
@@ -6,6 +6,8 @@ import { UserLoginRequestDTO } from "../dto/user/user-login-request.dto";
 import { CreateUserDTO } from "../dto/user/create-User.dto";
 import { UserDTO } from "../dto/user/user.dto";
 import { UserSessionDTO } from "../dto/user/user-session.dto";
+import { Role, User } from "../modules/user/user.schema";
+import { UserChangeRoleRequestDTO } from "src/dto/user/user-change-role-request.dto";
 
 @Controller("user")
 export class UserController {
@@ -66,7 +68,7 @@ export class UserController {
       }
     }
     catch (err) {
-      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ err: { msg: err.message, stack: err.stack } });
+      this.handleError(err, response);
     }
   }
 
@@ -92,19 +94,109 @@ export class UserController {
     }
     catch (err)
     {
-      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ err: { msg: err.message, stack: err.stack } });
+      this.handleError(err, response);
     }
   }
 
-  @Get("/auth?") async Auth(@Res() response, @Query("username") username, @Query("token") token) {
+  async tokenRoleAuth(token: string, role: Role) : Promise<{success: boolean; user?: User;}> {
     try {
-      const user = await this.userService.findByUsername(username);
+      const userSession = await this.userService.findBySession(token);
+      
+      if(userSession !== undefined && userSession !== null && await this.userService.verify(userSession.session) && userSession.user.role == role)
+      {
+        return {
+          success: true,
+          user: userSession.user,
+        };
+      }
+      else
+      {
+        return {
+          success: false,
+        };
+      }
+    } catch (err) {
+      return {
+        success: false,
+      };
+    }
+  }
 
-      if(user !== undefined && user !== null && await this.userService.verify(username, token))
+  async handleError(err, response) {
+    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ err: { msg: err.message, stack: err.stack }});
+  }
+
+  @Post("/changeRole") async ChangeRole(@Res() response, @Query("token") token, @Body() dto: UserChangeRoleRequestDTO) {
+    try {
+      let authResponse = await this.tokenRoleAuth(token, Role.ADMIN);
+      if(authResponse.success) {
+        if(dto.user.username !== authResponse.user.username)
+        {
+          let update = await this.userService.update(dto.user.username, dto.role);
+
+          return response.status(HttpStatus.OK).json({
+            success: update,
+          });
+        }
+        else
+        {
+          return response.status(HttpStatus.FORBIDDEN).json({
+            success: false,
+          });
+        }
+      }
+      else
+      {
+        return response.status(HttpStatus.UNAUTHORIZED).json({
+          success: false,
+        });
+      }
+    }
+    catch (err)
+    {
+      this.handleError(err, response);
+    }
+  }
+
+  @Post("/delete") async Delete(@Res() response, @Query("token") token, @Body() dto: UserDTO) {
+    try {
+      let authResponse = await this.tokenRoleAuth(token, Role.ADMIN)
+      if(authResponse.success) {
+        if(dto.username !== authResponse.user.username)
+        {
+          let update = await this.userService.delete(dto.username);
+
+          return response.status(HttpStatus.OK).json({
+            success: update,
+          });
+        }
+        else
+        {
+          return response.status(HttpStatus.FORBIDDEN).json({
+            success: false,
+          });
+        }
+      }
+      else
+      {
+        return response.status(HttpStatus.UNAUTHORIZED).json({
+          success: false,
+        });
+      }
+    } catch (err) {
+      this.handleError(err, response);
+    }
+  }
+
+  @Get("/auth?") async Auth(@Res() response, @Query("token") token) {
+    try {
+      const userSession = await this.userService.findBySession(token);
+
+      if(userSession !== undefined && userSession !== null && await this.userService.verify(userSession.session))
       {
         return response.status(HttpStatus.OK).json({
           success: true,
-          user: new UserDTO(user),
+          user: new UserDTO(userSession.user),
         });
       }
       else
@@ -116,7 +208,31 @@ export class UserController {
     }
     catch (err)
     {
-      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ err: { msg: err.message, stack: err.stack }});
+      this.handleError(err, response);
+    }
+  }
+
+  @Get("/users?") async Users(@Res() response, @Query("token") token) {
+    try {
+      if((await this.tokenRoleAuth(token, Role.ADMIN)).success) {
+        let users = await this.userService.getAll();
+        let userDTOs = users.map((user) => {
+          return new UserDTO(user);
+        });
+
+        return response.status(HttpStatus.OK).json({
+          success: true,
+          users: userDTOs,
+        });
+      } else {
+        return response.status(HttpStatus.UNAUTHORIZED).json({
+          success: false,
+        });
+      }
+    }
+    catch (err)
+    {
+      this.handleError(err, response);
     }
   }
 }
