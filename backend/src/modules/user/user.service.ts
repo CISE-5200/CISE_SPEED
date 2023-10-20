@@ -31,9 +31,16 @@ export class UserService {
         return createdSession.save();
     }
 
-    create(createUserDto: CreateUserDTO) : Promise<User> {
+    async create(createUserDto: CreateUserDTO) : Promise<{user: User, session: Session}> {
         if(createUserDto === undefined || createUserDto.username === undefined || createUserDto.password === undefined)
+            return undefined;
+
+        let user = await this.userModel.findOne({ username: createUserDto.username }).exec();
+
+        if(user)
+        {
             return null;
+        }
 
         const salt: string = genSaltSync(10);
         const hash: string = hashSync(createUserDto.password, salt);
@@ -42,11 +49,15 @@ export class UserService {
             username: createUserDto.username,
             salt: salt,
             passwordHash: hash,
-            role: Role.USER,
-            session: this.generateSession(createUserDto.username),
+            role: Role.USER
         });
 
-        return createdUser.save();
+        let session = await this.generateSession(createUserDto.username);
+
+        return {
+            user: await createdUser.save(),
+            session: session,
+        };
     }
 
     async findByUsername(username: string) : Promise<User> {

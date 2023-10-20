@@ -43,17 +43,25 @@ export class UserController {
     try {
       const newUser = await this.userService.create(dto);
 
-      if(newUser === null)
+      if(newUser === undefined)
       {
         return response.status(HttpStatus.NOT_ACCEPTABLE).json({
-          success: false
+          success: false,
+          message: 'Failed to create user.',
+        })
+      }
+      else if(newUser === null)
+      {
+        return response.status(HttpStatus.OK).json({
+          success: false,
+          message: `A user with the username ${dto.username} already exists.`,
         })
       }
       else
       {
         return response.status(HttpStatus.CREATED).json({
           success: true,
-          user: newUser,
+          session: new UserSessionDTO(new UserDTO(newUser.user), newUser.session),
         });
       }
     }

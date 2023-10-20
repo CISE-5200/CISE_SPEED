@@ -31,6 +31,36 @@ export interface User {
     role: Role;
 }
 
+export const Register = async (request: LoginRequest) : Promise<LoginResponse> => {
+    try
+    {
+        const response = await axios.post(`${BACKEND_URL}/user/register`, request);
+        let data = response.data;
+
+        let success = data.success;
+
+        if(!success)
+        {
+            return data;
+        }
+
+        let session: Session = data.session;
+        setCookie('session', session, { secure: true });
+
+        AuthManager.notify(session.user);
+
+        return {
+            success: data.success,
+            user: session.user,
+        };
+    } catch(err) {
+        return {
+            success: false,
+            message: "Failed to register account.",
+        };
+    }
+}
+
 export const Login = async (request: LoginRequest) : Promise<LoginResponse> => {
     try
     {
