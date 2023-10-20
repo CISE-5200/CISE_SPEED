@@ -34,8 +34,13 @@ const PopulatedNavBar = () => {
           Login
         </NavItem>
       ) : (
-        <NavItem route="/logout">
-          {user.username}
+        <NavItem dropdown>
+          {user.username} <IoMdArrowDropdown />
+          <NavDropdown>
+            <NavItem route="/logout">
+              Log Out
+            </NavItem>
+          </NavDropdown>
         </NavItem>
       )}
       

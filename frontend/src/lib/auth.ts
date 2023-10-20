@@ -128,6 +128,9 @@ class AuthManager
     public static subscribe(callback: AuthCallback)
     {
         AuthManager.callbacks.push(callback);
+    
+        if(AuthManager.callbacks.length == 1) // Check for first time.
+            this.check();
     }
 
     private static check() {
