@@ -2,12 +2,12 @@ import "../../styles/globals.scss";
 
 interface PopupProps {
     message: string;
-    success: boolean;
+    success?: boolean;
 };
 
 const Popup = (props: PopupProps) => {
     return (
-        <p className={"info-box" + " " + (props.success ? "success" : "error")}>{props.message}</p>
+        <p className={"info-box" + " " + (props.success !== undefined ? (props.success ? "success" : "error") : "info")}>{props.message}</p>
     );
 };
 

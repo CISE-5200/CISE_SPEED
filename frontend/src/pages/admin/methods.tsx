@@ -27,6 +27,10 @@ const MethodsTable = (props: { adminUser: User | null, methods: Method[] | null 
 
     };
 
+    const onClickDefine = () => {
+      
+    };
+
     const actions: { label?: string; action: any; }[] = [
       {
         action: (method: Method) => (
@@ -39,7 +43,7 @@ const MethodsTable = (props: { adminUser: User | null, methods: Method[] | null 
 
     return (
         <>
-            <button>Define new method</button>
+            <button onClick={onClickDefine}>Define new method</button>
 
             {methods !== undefined && methods !== null && methods.length > 0 ? (
                 <>

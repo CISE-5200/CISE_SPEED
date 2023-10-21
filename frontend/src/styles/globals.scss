@@ -67,6 +67,7 @@ th {
 }
 .info-box {
   padding: 0.5em;
+  text-align: center;
 }
 
 .info-box.success {
@@ -77,6 +78,12 @@ th {
 
 .info-box.error {
   background-color: lightcoral;
+  color: white;
+  font-weight: bold;
+}
+
+.info-box.info {
+  background-color: lightblue;
   color: white;
   font-weight: bold;
 }
