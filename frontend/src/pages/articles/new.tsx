@@ -1,8 +1,5 @@
 import { FormEvent, useState } from "react";
 import formStyles from "../../styles/Form.module.scss";
-//import { useForm } from "react-hook-form";
-//import { yupResolver } from "@hookform/resolvers/yup";
-//import * as Yup from "yup";
 import axios from "axios";
 import BACKEND_URL from "@/global";
 
@@ -105,7 +102,7 @@ const NewDiscussion = () => {
 			console.log('Form is valid and can be submitted');
 			setSubmitMessage('Article submitted for moderation.');
 			// Submit data
-			axios.post(`${BACKEND_URL}/user/submit`, {
+			axios.post(`${BACKEND_URL}/article/submit`, {
 				title: title,
 				authors: authors,
 				year: year,
