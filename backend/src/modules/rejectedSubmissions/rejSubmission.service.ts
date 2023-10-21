@@ -2,7 +2,7 @@ import { Model } from "mongoose";
 import { Injectable, Query } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { RejSubmission } from "./rejSubmission.schema";
-import { CreateSubDTO } from "src/dto/create-Sub.dto";
+import { CreateSubDTO } from "../../dto/create-Sub.dto";
 
 @Injectable()
 export class RejSubmissionService {

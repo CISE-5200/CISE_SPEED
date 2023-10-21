@@ -1,7 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ModeratorController } from './moderator.controller';
-import { getModelToken } from '@nestjs/mongoose';
 import { SubmissionService } from '../modules/submission/submission.service';
+import { getModelToken } from '@nestjs/mongoose';
+import { RejSubmissionService } from '../modules/rejectedSubmissions/rejSubmission.service';
+import { AccSubmissionService } from '../modules/acceptedSubmissions/accSubmission.service';
+import { ArticleService } from '../modules/article/article.service';
 
 describe('ModeratorController', () => {
   let controller: ModeratorController;
@@ -13,6 +16,30 @@ describe('ModeratorController', () => {
         SubmissionService,
         {
           provide: getModelToken('Submission'),
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
+          }
+        },
+        AccSubmissionService,
+        {
+          provide: getModelToken('AccSubmission'),
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
+          }
+        },
+        RejSubmissionService,
+        {
+          provide: getModelToken('RejSubmission'),
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
+          }
+        },
+        ArticleService,
+        {
+          provide: getModelToken('Article'),
           useValue: {
             find: jest.fn(),
             findOne: jest.fn(),
