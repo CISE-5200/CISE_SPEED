@@ -17,7 +17,7 @@ import { ArticleService } from "../modules/Articles/article.service";
 
 @Controller("moderator")
 export class ModeratorController {
-  constructor(
+  /*constructor(
     private readonly submissionService: SubmissionService,
     private readonly acceptedService: AccSubmissionService,
     private readonly rejectedService: RejSubmissionService,
@@ -27,7 +27,7 @@ export class ModeratorController {
    * get the full list of submissions for moderators
    * @param response
    * @returns full list of submissions
-   */
+   *
   @Get("") async getSubmissionList(@Res() response) {
     try {
       const submissions = await this.submissionService.findAll();
@@ -43,7 +43,7 @@ export class ModeratorController {
    * @param response
    * @param articleID _ID of the submission
    * @returns the submission of the corrisponding ID
-   */
+   *
   // @Get("byID/:id") async getSubmissionByID(
   //   @Res() response,
   //   @Param("id") articleID: number,
@@ -125,5 +125,5 @@ export class ModeratorController {
     const mergedResults = [...acceptedSubs, ...rejectedSubs, ...articles];
     return mergedResults;
     // return { acceptedSubs, rejectedSubs, articles };
-  }
+  }*/
 }

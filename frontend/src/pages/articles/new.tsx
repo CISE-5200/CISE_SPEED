@@ -9,7 +9,6 @@ import BACKEND_URL from "@/global";
 const NewDiscussion = () => {
 	const [title, setTitle] = useState("");
 	const [authors, setAuthors] = useState<string[]>([]);
-	const [source, setSource] = useState("");
 	const [pubYear, setPubYear] = useState<number>(0);
 	const [journal, setJournal] = useState("");
 	const [method, setMethod] = useState("");
@@ -27,7 +26,6 @@ const NewDiscussion = () => {
 			JSON.stringify({
 				title,
 				authors,
-				source,
 				pubYear,
 				journal,
 				method,
@@ -139,9 +137,9 @@ const NewDiscussion = () => {
 				/>
 				<label htmlFor="method">Select Method:</label>
 				<select id="method" name="method" onChange={(event) => {setMethod(event.target.value)}}>
-					<option value="volvo">TDD</option>
-					<option value="saab">Mob Progarmming</option>
-					<option value="fiat">Automated Testing</option>
+					<option value="vTDD">TDD</option>
+					<option value="Mob Programming">Mob Progarmming</option>
+					<option value="Automated Testing">Automated Testing</option>
 				</select>
 				<label htmlFor="research">Research Type:</label>
 				<input
@@ -158,11 +156,11 @@ const NewDiscussion = () => {
 				<input
 					className={formStyles.formItem}
 					type="text"
-					name="source"
-					id="source"
-					value={source}
+					name="participant"
+					id="participant"
+					value={participant}
 					onChange={(event) => {
-						setSource(event.target.value);
+						setParticipant(event.target.value);
 					}}
 				/>
 				<button className={formStyles.formItem} type="submit">
