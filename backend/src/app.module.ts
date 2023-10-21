@@ -16,16 +16,19 @@ import {
   RejSubmission,
   RejSubmissionSchema,
 } from "./modules/rejectedSubmissions/rejSubmission.schema";
-import { Article, ArticleSchema } from "./modules/Articles/article.schema";
 import { UserController } from "./user/user.controller";
-import { AdminController } from "./admin/admin.controller";
 import { ModeratorController } from "./moderator/moderator.controller";
 import { AnalystController } from "./analyst/analyst.controller";
 import { AccSubmissionService } from "./modules/acceptedSubmissions/accSubmission.service";
 import { RejSubmissionService } from "./modules/rejectedSubmissions/rejSubmission.service";
-import { ArticleService } from "./modules/Articles/article.service";
 import { Session, SessionSchema, User, UserSchema } from "./modules/user/user.schema";
 import { UserService } from "./modules/user/user.service";
+import { Method, MethodSchema } from "./modules/method/method.schema";
+import { MethodController } from "./method/method.controller";
+import { MethodService } from "./modules/method/method.service";
+import { Article, ArticleSchema } from "./modules/article/article.schema";
+import { ArticleController } from "./article/article.controller";
+import { ArticleService } from "./modules/article/article.service";
 
 @Module({
   imports: [
@@ -46,13 +49,15 @@ import { UserService } from "./modules/user/user.service";
     MongooseModule.forFeature([{ name: Article.name, schema: ArticleSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema}]),
     MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
+    MongooseModule.forFeature([{ name: Method.name, schema: MethodSchema }]),
   ],
   controllers: [
     AppController,
     UserController,
-    AdminController,
+    ArticleController,
     ModeratorController,
     AnalystController,
+    MethodController,
   ],
   providers: [
     AppService,
@@ -60,7 +65,8 @@ import { UserService } from "./modules/user/user.service";
     AccSubmissionService,
     RejSubmissionService,
     ArticleService,
-    UserService
+    UserService,
+    MethodService,
   ],
 })
 export class AppModule {}

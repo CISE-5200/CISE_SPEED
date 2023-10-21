@@ -12,7 +12,7 @@ import {
 import { SubmissionService } from "../modules/submission/submission.service";
 import { AccSubmissionService } from "../modules/acceptedSubmissions/accSubmission.service";
 import { RejSubmissionService } from "../modules/rejectedSubmissions/rejSubmission.service";
-import { ArticleService } from "../modules/Articles/article.service";
+import { ArticleService } from "../modules/article/article.service";
 // import "@types/mongoose";
 
 @Controller("moderator")

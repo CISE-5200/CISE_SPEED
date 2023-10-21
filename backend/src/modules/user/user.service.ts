@@ -64,6 +64,41 @@ export class UserService {
         return await this.userModel.findOne({ username: username }).exec();
     }
 
+    async update(username: string, role: Role) : Promise<boolean> {
+        let user = await this.userModel.findOne({ username: username }).exec();
+
+        if(user)
+        {
+            user.role = role;
+            return (await this.userModel.updateOne({ username: username }, user).exec()).modifiedCount == 1;
+        }
+
+        return false;
+    }
+
+    async delete(username: string) : Promise<boolean> {
+        return (await this.userModel.deleteOne({ username: username }).exec()).deletedCount == 1;
+    }
+
+    async findBySession(token: string) : Promise<{user: User, session: Session}> {
+        let session = await this.sessionModel.findOne({ token: token }).exec();
+
+        if(!session)
+        {
+            return null;
+        }
+
+        let user = await this.userModel.findOne({ username: session.username }).exec();
+        return {
+            user: user,
+            session: session,
+        };
+    }
+
+    async getAll() : Promise<User[]> {
+        return await this.userModel.find();
+    }
+
     async authenticate(password: string, user: User) : Promise<Session | null> {
         if(user === undefined || password === undefined)
             return null;
@@ -78,11 +113,36 @@ export class UserService {
         return null;
     }
 
-    async verify(username: string, token: string) {
-        if(username === undefined || token === undefined)
+    verify(session: Session) {
+        if(session === undefined)
             return null;
 
-        let session = await this.sessionModel.findOne({ username: username }).exec();
-        return session.token === token && (new Date().getTime() / 1000) < session.issueTime + session.expiryTime;
+        return (new Date().getTime() / 1000) < session.issueTime + session.expiryTime;
     }
+
+
+  async tokenRoleAuth(token: string, role: Role) : Promise<{success: boolean; user?: User;}> {
+    try {
+      const userSession = await this.findBySession(token);
+      
+      if(userSession !== undefined && userSession !== null && this.verify(userSession.session) && userSession.user.role == role)
+      {
+        return {
+          success: true,
+          user: userSession.user,
+        };
+      }
+      else
+      {
+        return {
+          success: false,
+        };
+      }
+    } catch (err) {
+      return {
+        success: false,
+      };
+    }
+  }
+
 }

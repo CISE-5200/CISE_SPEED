@@ -31,21 +31,21 @@ const PopulatedNavBar = () => {
         <NavItem dropdown>
           {user.username} <IoMdArrowDropdown />
           <NavDropdown>
-            {user.role == Role.MODERATOR && (
-              <NavItem route="/moderation">
-                Moderation
+            {user.role == Role.ADMIN && (
+              <NavItem route="/admin">
+                Administration
               </NavItem>
             )}
 
-            {user.role == Role.ANALYST && (
+            {user.role == Role.ANALYST || user.role == Role.ADMIN && (
               <NavItem route="/analyst">
                 Analysis
               </NavItem>
             )}
 
-            {user.role == Role.ADMIN && (
-              <NavItem route="/admin">
-                Administration
+            {user.role == Role.MODERATOR || user.role == Role.ADMIN && (
+              <NavItem route="/moderation">
+                Moderation
               </NavItem>
             )}
 
