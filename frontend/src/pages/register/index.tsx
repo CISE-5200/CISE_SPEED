@@ -1,31 +1,31 @@
 import { useState, FormEvent } from "react";
 import formStyles from "../../styles/Form.module.scss";
-import { Login, LoginResponse } from "../../lib/auth";
+import { Register, LoginResponse } from "../../lib/auth";
 import { useRouter } from "next/router";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loginValid, setLoginValid] = useState<boolean | null>(null);
-  const [loginMessage, setLoginMessage] = useState("");
+  const [registrationValid, setRegistrationValid] = useState<boolean | null>(null);
+  const [registrationMessage, setRegistrationMessage] = useState("");
   const router = useRouter();
   
   /**
-   * submit button handler for login page
+   * submit button handler for registration page
    * looks up user name and password and finds if user if found
    * @param event Form event object for preventing default action
    */
-  const submitLogin = async (event: FormEvent<HTMLFormElement>) => {
+  const submitRegistration = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try
     {
-      let response: LoginResponse = await Login({
+      let response: LoginResponse = await Register({
         username: username,
         password: password,
       });
 
-      setLoginValid(response.success);
+      setRegistrationValid(response.success);
 
       if(response.success)
       {
@@ -35,25 +35,25 @@ const LoginPage = () => {
       }
       else if(response.message !== undefined)
       {
-        setLoginMessage(response.message);
+        setRegistrationMessage(response.message);
       }
     } catch(err) {
-      setLoginValid(false);
+      setRegistrationValid(false);
     }
   };
 
   const errorMsg = (
-    <div>{loginMessage}</div>
+    <div>{registrationMessage}</div>
   );
 
   const successMsg = (
-    <div>Login successful, welcome back {username}.</div>
+    <div>Registration successful! Welcome {username}.</div>
   );
 
   return (
     <div>
-      <h1>Login</h1>
-      <form className={formStyles.form} onSubmit={submitLogin} action="#">
+      <h1>Registration</h1>
+      <form className={formStyles.form} onSubmit={submitRegistration} action="#">
         <input
           className={formStyles.formItem}
           type="text"
@@ -75,14 +75,14 @@ const LoginPage = () => {
           }}
         />
         <button className={formStyles.formItem} type="submit">
-          Submit
+          Register
         </button>
       </form>
-      {loginValid !== null && !loginValid && errorMsg}
-      {loginValid !== null && loginValid && successMsg}
-      <a href="#" onClick={() => router.push('/register')}>Looking to register?</a>
+      {registrationValid !== null && !registrationValid && errorMsg}
+      {registrationValid !== null && registrationValid && successMsg}
+      <a href="#" onClick={() => router.push('/login')}>Looking to log in?</a>
     </div>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

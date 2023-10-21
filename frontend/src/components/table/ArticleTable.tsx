@@ -25,8 +25,8 @@ const ArticleTable = (props: {articles: ArticlesInterface[] | undefined}) => {
 	
 	const headers: { key: keyof ArticlesInterface; label: string; display?: DisplayFunction | undefined }[] = [
 		{ key: "title", label: "Title" },
-		{ key: "authors", label: "Authors" },
-		{ key: "date", label: "Publication Date", display: (date: Date) => date.toString() },
+		{ key: "authors", label: "Authors", display: (authors: string[]) => authors.join(", ") },
+		{ key: "date", label: "Publication Date", display: (date: Date) => `${new Date(date).toLocaleDateString("en-NZ")}` },
 		{ key: "journal", label: "Journal" },
 		{ key: "volume", label: "Volume" },
 		{ key: "issue", label: "Issue" },
