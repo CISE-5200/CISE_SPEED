@@ -1,10 +1,12 @@
 export class CreateSubDTO {
   title: string;
   authors: string[];
-  date: string;
+  year: number;
   journal: string;
-  volume: number;
-  issue: number;
-  pageRange: [number, number];
-  doi: string;
+  method: string;
+  claim: string;
+  result: string;
+  researchType: string;
+  participant: string;
+  status: string;
 }

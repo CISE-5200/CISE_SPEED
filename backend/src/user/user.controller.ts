@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Body, Controller, Get, HttpStatus, Post, Res, Req, Query } from "@nestjs/common";
 import { CreateSubDTO } from "../dto/create-Sub.dto";
 import { SubmissionService } from "../modules/submission/submission.service";

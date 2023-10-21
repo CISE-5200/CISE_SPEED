@@ -1,5 +1,6 @@
+/* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Types } from "mongoose";
+import { HydratedDocument} from "mongoose";
 
 export type SubmissionDocument = HydratedDocument<Submission>;
 
@@ -10,17 +11,21 @@ export class Submission {
   @Prop()
   authors: string[];
   @Prop()
-  date: string;
+  year: number;
   @Prop()
   journal: string;
   @Prop()
-  volume: number;
+  method: string;
   @Prop()
-  issue: number;
+  claim: string;
   @Prop()
-  pageRange: [number, number];
+  result: string;
   @Prop()
-  doi: string;
+  researchType: string;
+  @Prop()
+  participant: string;
+  @Prop()
+  status: string;
 }
 
 export const SubmissionSchema = SchemaFactory.createForClass(Submission);

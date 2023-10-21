@@ -1,27 +1,60 @@
 import { FormEvent, useState } from "react";
 import formStyles from "../../styles/Form.module.scss";
+//import { useForm } from "react-hook-form";
+//import { yupResolver } from "@hookform/resolvers/yup";
+//import * as Yup from "yup";
+import axios from "axios";
+import BACKEND_URL from "@/global";
+
 const NewDiscussion = () => {
 	const [title, setTitle] = useState("");
 	const [authors, setAuthors] = useState<string[]>([]);
 	const [source, setSource] = useState("");
 	const [pubYear, setPubYear] = useState<number>(0);
-	const [doi, setDoi] = useState("");
-	const [summary, setSummary] = useState("");
-	const [linkedDiscussion, setLinkedDiscussion] = useState("");
+	const [journal, setJournal] = useState("");
+	const [method, setMethod] = useState("");
+	const [claim, setClaim] = useState("");
+	const [result, setResult] = useState("");
+	const [research, setResearch] = useState("");
+	const [participant, setParticipant] = useState("");
+	const [status, setStatus] = useState("");
+
 	const submitNewArticle = async (event: FormEvent<HTMLFormElement>) => {
+		setResult("Unclear");
+		setStatus("Submitted");
 		event.preventDefault();
 		console.log(
 			JSON.stringify({
 				title,
 				authors,
 				source,
-				publication_year: pubYear,
-				doi,
-				summary,
-				linked_discussion: linkedDiscussion,
+				pubYear,
+				journal,
+				method,
+				claim,
+				result,
+				research,
+				participant,
 			})
 		);
+
+		axios.post(`${BACKEND_URL}/user/submit`, {
+			title: title,
+			authors: authors,
+			year: pubYear,
+			journal: journal,
+			method: method,
+			claim: claim,
+			result: result,
+			researchType: research,
+			participant: participant,
+			status: status,
+
+		}).then((response) => {
+			let data = response.data;
+		});
 	};
+
 	// Some helper methods for the authors array
 	const addAuthor = () => {
 		setAuthors(authors.concat([""]));
@@ -66,17 +99,6 @@ const NewDiscussion = () => {
 				<button onClick={() => addAuthor()} className={formStyles.buttonItem} style={{ marginLeft: "auto" }} type="button">
 					+
 				</button>
-				<label htmlFor="source">Source:</label>
-				<input
-					className={formStyles.formItem}
-					type="text"
-					name="source"
-					id="source"
-					value={source}
-					onChange={(event) => {
-						setSource(event.target.value);
-					}}
-				/>
 				<label htmlFor="pubYear">Publication Year:</label>
 				<input
 					className={formStyles.formItem}
@@ -93,19 +115,56 @@ const NewDiscussion = () => {
 						}
 					}}
 				/>
-				<label htmlFor="doi">DOI:</label>
+				<label htmlFor="journal">Journal:</label>
 				<input
 					className={formStyles.formItem}
 					type="text"
-					name="doi"
-					id="doi"
-					value={doi}
+					name="journal"
+					id="journal"
+					value={journal}
 					onChange={(event) => {
-						setDoi(event.target.value);
+						setJournal(event.target.value);
 					}}
 				/>
-				<label htmlFor="summary">Summary:</label>
-				<textarea className={formStyles.formTextArea} name="summary" value={summary} onChange={(event) => setSummary(event.target.value)} />
+				<label htmlFor="claim">Claim:</label>
+				<input
+					className={formStyles.formItem}
+					type="text"
+					name="claim"
+					id="claim"
+					value={claim}
+					onChange={(event) => {
+						setClaim(event.target.value);
+					}}
+				/>
+				<label htmlFor="method">Select Method:</label>
+				<select id="method" name="method" onChange={(event) => {setMethod(event.target.value)}}>
+					<option value="volvo">TDD</option>
+					<option value="saab">Mob Progarmming</option>
+					<option value="fiat">Automated Testing</option>
+				</select>
+				<label htmlFor="research">Research Type:</label>
+				<input
+					className={formStyles.formItem}
+					type="text"
+					name="research"
+					id="research"
+					value={research}
+					onChange={(event) => {
+						setResearch(event.target.value);
+					}}
+				/>
+				<label htmlFor="participant">Reseach Participant type:</label>
+				<input
+					className={formStyles.formItem}
+					type="text"
+					name="source"
+					id="source"
+					value={source}
+					onChange={(event) => {
+						setSource(event.target.value);
+					}}
+				/>
 				<button className={formStyles.formItem} type="submit">
 					Submit
 				</button>
@@ -113,4 +172,5 @@ const NewDiscussion = () => {
 		</div>
 	);
 };
+
 export default NewDiscussion;
