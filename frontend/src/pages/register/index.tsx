@@ -2,6 +2,7 @@ import { useState, FormEvent } from "react";
 import formStyles from "../../styles/Form.module.scss";
 import { Register, LoginResponse } from "../../lib/auth";
 import { useRouter } from "next/router";
+import Popup from "@/components/popup/Popup";
 
 const RegisterPage = () => {
   const [username, setUsername] = useState("");
@@ -42,17 +43,16 @@ const RegisterPage = () => {
     }
   };
 
-  const errorMsg = (
-    <div>{registrationMessage}</div>
-  );
-
-  const successMsg = (
-    <div>Registration successful! Welcome {username}.</div>
-  );
+  const successMsg = `Registration successful! Welcome to SPEED, ${username}.`;
 
   return (
     <div>
       <h1>Registration</h1>
+
+    {registrationValid !== null && (
+      <Popup message={registrationValid ? successMsg : registrationMessage} success={registrationValid}/>
+    )}
+
       <form className={formStyles.form} onSubmit={submitRegistration} action="#">
         <input
           className={formStyles.formItem}
@@ -78,8 +78,6 @@ const RegisterPage = () => {
           Register
         </button>
       </form>
-      {registrationValid !== null && !registrationValid && errorMsg}
-      {registrationValid !== null && registrationValid && successMsg}
       <a href="#" onClick={() => router.push('/login')}>Looking to log in?</a>
     </div>
   );

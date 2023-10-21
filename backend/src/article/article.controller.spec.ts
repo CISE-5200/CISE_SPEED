@@ -1,15 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from './user.controller';
+import { ArticleController } from './article.controller';
 import { getModelToken } from '@nestjs/mongoose';
 import { UserService } from '../modules/user/user.service';
+import { ArticleService } from '../modules/article/article.service';
 
-describe('UserController', () => {
-  let controller: UserController;
+describe('ArticleController', () => {
+  let controller: ArticleController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserController],
+      controllers: [ArticleController],
       providers: [
+        ArticleService,
+        {
+          provide: getModelToken('Article'),
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
+          }
+        },
         UserService,
         {
           provide: getModelToken('User'),
@@ -28,7 +37,7 @@ describe('UserController', () => {
       ]
     }).compile();
 
-    controller = module.get<UserController>(UserController);
+    controller = module.get<ArticleController>(ArticleController);
   });
 
   it('should be defined', () => {

@@ -1,9 +1,11 @@
 import { useState, FormEvent } from "react";
 import formStyles from "../../styles/Form.module.scss";
-import { Login, LoginResponse } from "../../lib/auth";
+import { Login, LoginResponse, getServerSidePropsWithAuth } from "../../lib/auth";
 import { useRouter } from "next/router";
+import { GetServerSideProps, NextPage } from "next";
+import Popup from "@/components/popup/Popup";
 
-const LoginPage = () => {
+const LoginPage: NextPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginValid, setLoginValid] = useState<boolean | null>(null);
@@ -42,17 +44,16 @@ const LoginPage = () => {
     }
   };
 
-  const errorMsg = (
-    <div>{loginMessage}</div>
-  );
-
-  const successMsg = (
-    <div>Login successful, welcome back {username}.</div>
-  );
+  const successMsg = `Login successful, welcome back ${username}.`
 
   return (
     <div>
       <h1>Login</h1>
+
+      {loginValid !== null && (
+        <Popup message={loginValid ? successMsg : loginMessage} success={loginValid}/>
+      )}
+
       <form className={formStyles.form} onSubmit={submitLogin} action="#">
         <input
           className={formStyles.formItem}
@@ -78,11 +79,32 @@ const LoginPage = () => {
           Submit
         </button>
       </form>
-      {loginValid !== null && !loginValid && errorMsg}
-      {loginValid !== null && loginValid && successMsg}
       <a href="#" onClick={() => router.push('/register')}>Looking to register?</a>
     </div>
   );
 };
+
+export const getServerSideProps : GetServerSideProps = async (ctx) => {
+  return getServerSidePropsWithAuth(ctx, (auth: boolean) => { 
+    if(auth)
+    {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/",
+        },
+        props: {}
+      } ;
+    }
+    else
+    {
+      return {
+        props: {},
+      };
+    }
+  }, (user) => {
+    return user !== null;
+  });
+}
 
 export default LoginPage;

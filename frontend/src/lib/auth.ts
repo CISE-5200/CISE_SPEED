@@ -1,6 +1,7 @@
 import BACKEND_URL from "@/global";
 import axios from "axios";
 import { deleteCookie, getCookie, hasCookie, setCookie } from "cookies-next";
+import { GetServerSidePropsContext } from "next";
 import { useState, useEffect } from "react";
 
 export enum Role {
@@ -98,15 +99,28 @@ export const Logout = async () => {
 
 type UserType = User | null;
 
-const GetUser = async (): Promise<UserType> => {
+const GetSession = () : Session | null => {
     if(!hasCookie('session'))
         return null;
 
     let sessionCookie = getCookie('session', { secure: true })  as string;
-    const session: Session = JSON.parse(sessionCookie) as Session;
+
+    if(sessionCookie === undefined)
+        return null;
+
+    return JSON.parse(sessionCookie) as Session;
+}
+
+const GetUser = async(): Promise<UserType> => {
+    return GetUserFromSession(GetSession());
+};
+
+const GetUserFromSession = async (session: Session | null): Promise<UserType> => {
+    if(session === null)
+        return null;
 
     try {
-        const response = await axios.get(`${BACKEND_URL}/user/auth?username=${session.user.username}&token=${session.token}`);
+        const response = await axios.get(`${BACKEND_URL}/user/auth?token=${session.token}`);
         const data = response.data;
     
         if(!data.success)
@@ -117,6 +131,17 @@ const GetUser = async (): Promise<UserType> => {
         return null;
     }
 }
+
+const GetUserFromContext = async(ctx: GetServerSidePropsContext): Promise<UserType> => {
+    let sessionCookie = ctx.req.cookies['session'];
+
+    if(sessionCookie === undefined)
+        return null;
+
+    let session = JSON.parse(sessionCookie) as Session;
+
+    return GetUserFromSession(session);
+};
 
 type AuthCallback = (user: UserType) => void;
 
@@ -171,3 +196,162 @@ export const useAuth = () : UserType => {
 
     return user;
 };
+
+export enum RequestType {
+    POST,
+    GET,
+};
+
+interface Query {
+    key: string;
+    value: string;
+};
+
+const queriesToString = (queries: Query[]): string => {
+    return queries.map(query => `${query.key}=${query.value}`).join("&");
+}
+
+export const makeAuthRequest = async (uri: string, reqType: RequestType, user: UserType = useAuth(), data: any = {}, queries?: Query[]) : Promise<any> => {
+    const session = GetSession();
+
+    if(session !== null)
+    {
+        let response = null;
+
+        try
+        {
+            switch(reqType)
+            {
+                case RequestType.POST:
+                    response = await axios.post(`${BACKEND_URL}${uri}?token=${session.token}${queries !== undefined && queries !== null && queries.length > 0 ? `&${queriesToString(queries)}` : ``}`, data);
+                    break;
+                case RequestType.GET:
+                    response = await axios.get(`${BACKEND_URL}${uri}?token=${session.token}${queries !== undefined && queries !== null && queries.length > 0 ? `&${queriesToString(queries)}` : ``}`);
+                    break;
+            }
+        }
+        catch (err)
+        {
+
+        }
+
+        if(response !== null && response.data.success)
+            return response.data;
+    }
+
+    return {
+        success: false,
+    };
+}
+
+export interface Request {
+    update: () => void;
+    data?: any;
+};
+
+export const useAuthRequest = (uri: string, reqType: RequestType, user: UserType = useAuth(), data: any = {}, queries?: Query[]) : Request => {
+    const requestData = () => {
+        const session = GetSession();
+
+        if(session === null)
+        {
+            setResponseData({
+                update: requestData,
+            });
+        }
+        else
+        {
+            const handleData = (responseData: any) => {
+                if(!responseData.success)
+                {
+                    setResponseData({
+                        update: requestData,
+                    });
+                }
+                else
+                {
+                    setResponseData({
+                        update: requestData,
+                        data: responseData,
+                    });
+                }
+            };
+
+            switch(reqType)
+            {
+                case RequestType.POST:
+                    axios.post(`${BACKEND_URL}${uri}?token=${session.token}${queries !== undefined && queries !== null && queries.length > 0 ? `&${queriesToString(queries)}` : ``}`, data).then((response) => {
+                        handleData(response.data);
+                    });
+                    break;
+                case RequestType.GET:
+                    axios.get(`${BACKEND_URL}${uri}?token=${session.token}${queries !== undefined && queries !== null && queries.length > 0 ? `&${queriesToString(queries)}` : ``}`).then((response) => {
+                        handleData(response.data);
+                    });
+                    break;
+            }
+        }
+    };
+
+    const [responseData, setResponseData] = useState<Request>({
+        update: requestData,
+    });
+
+    useEffect(() => {
+        requestData();
+    }, []);
+
+    return responseData;
+}
+
+export const useRequest = (uri: string, reqType: RequestType, data: any = {}) : Request => {    
+    const requestData = () => {
+        const handleData = (responseData: any) => {
+            if(!responseData.success)
+            {
+                setResponseData({
+                    update: requestData,
+                });
+            }
+            else
+            {
+                setResponseData({
+                    update: requestData,
+                    data: responseData,
+                });
+            }
+        };
+
+        switch(reqType)
+        {
+            case RequestType.POST:
+                axios.post(`${BACKEND_URL}${uri}`, data).then((response) => {
+                    handleData(response.data);
+                });
+                break;
+            case RequestType.GET:
+                axios.get(`${BACKEND_URL}${uri}`).then((response) => {
+                    handleData(response.data);
+                });
+                break;
+        }
+    };
+
+    const [responseData, setResponseData] = useState<Request>({
+        update: requestData,
+    });
+    
+    useEffect(() => {
+        requestData();
+    }, []);
+
+    return responseData;
+}
+
+type ServerSidePropsFunction = (auth: boolean) => any;
+type ServerSidePropsAuthFunction = (user: UserType) => boolean;
+
+export const getServerSidePropsWithAuth = async (ctx: GetServerSidePropsContext, serverSidePropsFunc: ServerSidePropsFunction, authFunction: ServerSidePropsAuthFunction) : Promise<any> => {
+    const user = await GetUserFromContext(ctx);
+    return serverSidePropsFunc(authFunction(user));
+}

@@ -1,4 +1,4 @@
-import { Role, User } from "src/modules/user/user.schema";
+import { Role, User } from "../../modules/user/user.schema";
 
 export class UserDTO
 {
