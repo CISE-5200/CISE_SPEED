@@ -1,6 +1,4 @@
 import { Body, Controller, Get, HttpStatus, Post, Res, Query } from "@nestjs/common";
-import { CreateSubDTO } from "../dto/create-Sub.dto";
-import { SubmissionService } from "../modules/submission/submission.service";
 import { UserService } from "../modules/user/user.service";
 import { UserLoginRequestDTO } from "../dto/user/user-login-request.dto";
 import { CreateUserDTO } from "../dto/user/create-User.dto";
@@ -12,32 +10,7 @@ import { handle, handleAuth } from "src/global";
 
 @Controller("user")
 export class UserController {
-  constructor(private readonly submissionService: SubmissionService, private readonly userService: UserService) {}
-  @Post("/submit") async submitArticle(@Res() response, @Body() CreateSubDTO: CreateSubDTO) {
-
-    await handle(response, async () => {
-      const newSubmission = await this.submissionService.create(CreateSubDTO);
-      
-      return {
-        data: {
-          success: true,
-        },
-      };
-    });
-  }
-
-  @Get("/allArticles") async GetArticles(@Res() response) {
-    await handle(response, async () => {
-      const articles = await this.submissionService.findAll();
-
-      return {
-        data: {
-          success: true,
-          articles: articles,
-        },
-      };
-    });
-  }
+  constructor(private readonly userService: UserService) {}
 
   @Post("/register") async Register(@Res() response, @Body() dto: CreateUserDTO) {
     await handle(response, async () => {

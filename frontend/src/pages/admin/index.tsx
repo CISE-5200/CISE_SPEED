@@ -11,9 +11,6 @@ import MethodsTable from "./methods";
 const AdminPage: NextPage = () => {
   const user = useAuth();
 
-  const usersReponse = useAuthRequest('/user/all', RequestType.GET);
-  const methodsResponse = useRequest('/method/all', RequestType.GET);
-
   return (
     <div className="container">
       <h1>Admin</h1>
@@ -25,13 +22,13 @@ const AdminPage: NextPage = () => {
           <Tab>Methods</Tab>
         </TabList>
         <TabPanel>
-          <UserTable adminUser={user} users={usersReponse?.users}/>
+          <UserTable adminUser={user}/>
         </TabPanel>
         <TabPanel>
-          <AdminArticleTable/>
+          <AdminArticleTable adminUser={user}/>
         </TabPanel>
         <TabPanel>
-          <MethodsTable adminUser={user} methods={methodsResponse?.methods}/>
+          <MethodsTable adminUser={user}/>
         </TabPanel>
       </Tabs>
     </div>

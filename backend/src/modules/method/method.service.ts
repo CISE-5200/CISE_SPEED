@@ -9,14 +9,20 @@ export class MethodService {
     constructor(@InjectModel(Method.name) private methodModel: Model<Method>) {}
 
     async add(dto: CreateMethodDTO): Promise<boolean> {
-        const createdMethod = new this.methodModel(dto);
+        if(dto.id === undefined || dto.id === null || dto.id.trim().length == 0 ||
+            dto.name === undefined || dto.name === null || dto.name.trim().length == 0)
+            return false;
 
-        if(createdMethod)
+        const method = await this.methodModel.findOne({ id: dto.id }).exec();
+
+        if(method)
         {
             return false;
         }
-        
+
+        const createdMethod = new this.methodModel(dto);
         createdMethod.save();
+        
         return true;
     }
 

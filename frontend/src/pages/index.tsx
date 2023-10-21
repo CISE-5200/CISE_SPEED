@@ -8,7 +8,7 @@ const HomePage: NextPage = () => {
 	return (
 		<div className="container">
 			{user !== undefined && user !== null && (
-				<Popup message={`Welcome back, ${user.username}.`}/>
+				<Popup>{`Welcome back, ${user.username}.`}</Popup>
 			)}
 
 			<h1>Software Practice Empirical Evidence Database (SPEED)</h1>

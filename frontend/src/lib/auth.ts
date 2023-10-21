@@ -239,29 +239,41 @@ export const makeAuthRequest = async (uri: string, reqType: RequestType, user: U
             return response.data;
     }
 
-    return null;
+    return {
+        success: false,
+    };
 }
 
-export const useAuthRequest = (uri: string, reqType: RequestType, user: UserType = useAuth(), data: any = {}, queries?: Query[]) : any => {
-    const [responseData, setResponseData] = useState(null);
+export interface Request {
+    update: () => void;
+    data?: any;
+};
 
-    useEffect(() => {
+export const useAuthRequest = (uri: string, reqType: RequestType, user: UserType = useAuth(), data: any = {}, queries?: Query[]) : Request => {
+    const requestData = () => {
         const session = GetSession();
 
         if(session === null)
         {
-            setResponseData(null);
+            setResponseData({
+                update: requestData,
+            });
         }
         else
         {
             const handleData = (responseData: any) => {
                 if(!responseData.success)
                 {
-                    setResponseData(null);
+                    setResponseData({
+                        update: requestData,
+                    });
                 }
                 else
                 {
-                    setResponseData(responseData);
+                    setResponseData({
+                        update: requestData,
+                        data: responseData,
+                    });
                 }
             };
 
@@ -279,23 +291,34 @@ export const useAuthRequest = (uri: string, reqType: RequestType, user: UserType
                     break;
             }
         }
+    };
+
+    const [responseData, setResponseData] = useState<Request>({
+        update: requestData,
+    });
+
+    useEffect(() => {
+        requestData();
     }, []);
 
     return responseData;
 }
 
-export const useRequest = (uri: string, reqType: RequestType, data: any = {}) : any => {
-    const [responseData, setResponseData] = useState(null);
-
-    useEffect(() => {
+export const useRequest = (uri: string, reqType: RequestType, data: any = {}) : Request => {    
+    const requestData = () => {
         const handleData = (responseData: any) => {
             if(!responseData.success)
             {
-                setResponseData(null);
+                setResponseData({
+                    update: requestData,
+                });
             }
             else
             {
-                setResponseData(responseData);
+                setResponseData({
+                    update: requestData,
+                    data: responseData,
+                });
             }
         };
 
@@ -312,6 +335,14 @@ export const useRequest = (uri: string, reqType: RequestType, data: any = {}) : 
                 });
                 break;
         }
+    };
+
+    const [responseData, setResponseData] = useState<Request>({
+        update: requestData,
+    });
+    
+    useEffect(() => {
+        requestData();
     }, []);
 
     return responseData;

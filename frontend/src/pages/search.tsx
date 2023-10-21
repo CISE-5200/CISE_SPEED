@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import formStyles from "../styles/Form.module.scss";
 import ArticleTable, {ArticlesInterface} from "@/components/table/ArticleTable";
-import BACKEND_URL from "@/global";
-import axios from "axios";
+import { RequestType, useRequest } from "@/lib/auth";
 
 function onlyUnique(value: any, index: number, array: any[]) 
 {
@@ -15,27 +14,13 @@ interface MethodInterface // TODO: allow methods to be added
 	name: string;
 };
 
-const methods: MethodInterface[] = [{id: 'TDD', name: 'TDD'}, {id: 'MP', name: 'Mob Programming'}, {id: 'AT', name: 'Automated Testing'}];
-
 const SearchPage = () => {
 	const [filteredArticles, setFilteredArticles] = useState<ArticlesInterface[] | null>(null);
 	const [filteredArticlesByYear, setFilteredArticlesByYear] = useState<ArticlesInterface[] | null>(null);
 	const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
 
-	const [articleData, setArticleData] = useState<ArticlesInterface[]>();
-
-	useEffect(() => {
-		getArticleData();
-	}, []);
-
-	const getArticleData = async () => {
-		try {
-			const response = await axios.get(`${BACKEND_URL}/user/list`);
-		  	setArticleData(response.data.articles);
-		} catch (error) {
-		  console.log(error);
-		}
-	  };
+	const articles: ArticlesInterface[] = useRequest('/article/all', RequestType.GET, {}).data?.articles;
+	const methods: MethodInterface[] = useRequest('/method/all', RequestType.GET, {}).data?.methods;
 
 	const onSearchFormSubmit = (event: React.FormEvent<HTMLFormElement>) =>
 	{
@@ -44,17 +29,10 @@ const SearchPage = () => {
     	let formObject = Object.fromEntries(formData.entries());
 
 		let method = formObject.method;
-		setSelectedMethod(method.toString());
+		setSelectedMethod(method?.toString());
 
-		if(articleData !== undefined)
-		{
-			let filteredArticles: ArticlesInterface[] = articleData.filter((article) => article.method === method).map(article => article as ArticlesInterface);
-			setFilteredArticles(filteredArticles);
-		}
-		else
-		{
-			setFilteredArticles([]);
-		}
+		let filteredArticles: ArticlesInterface[] = articles?.filter((article) => article?.method === method).map(article => article as ArticlesInterface);
+		setFilteredArticles(filteredArticles);
 	};
 
 	if(filteredArticles === null)
@@ -64,8 +42,8 @@ const SearchPage = () => {
 				<h1>Search for Articles</h1>
 				<form className={formStyles.dropDown} onSubmit={onSearchFormSubmit} action="#">
 					<label htmlFor="method">Select Method:</label>
-					<select id="methods" name="method" defaultValue={selectedMethod !== null ? selectedMethod : methods[0].name}>
-						{methods.map((method) =>
+					<select id="methods" name="method" defaultValue={selectedMethod !== null ? selectedMethod : (methods !== undefined && methods.length > 0 ? methods[0].name : "")}>
+						{methods?.filter((method) => method?.name?.trim().length > 0).map((method) =>
 						{
 							return (
 								<option key={method.id} value={method.id}>{method.name}</option>
@@ -95,11 +73,11 @@ const SearchPage = () => {
 			}
 			else
 			{
-				setFilteredArticlesByYear(filteredArticles.filter((article) => article.date.getFullYear() === parseInt(event.currentTarget.value)));
+				setFilteredArticlesByYear(filteredArticles.filter((article) => article?.date?.getFullYear() === parseInt(event.currentTarget.value)));
 			}
 		};
 
-		const filteredArticlesYears = filteredArticles.map((article) => article.date.getFullYear()).filter(onlyUnique);
+		const filteredArticlesYears = filteredArticles.filter((article) => !isNaN(article?.date?.getFullYear())).map((article) => article?.date?.getFullYear()).filter(onlyUnique);
 
 		return (
 			<div className="container">

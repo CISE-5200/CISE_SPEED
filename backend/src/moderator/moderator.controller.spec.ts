@@ -4,7 +4,7 @@ import { SubmissionService } from 'src/modules/submission/submission.service';
 import { getModelToken } from '@nestjs/mongoose';
 import { RejSubmissionService } from 'src/modules/rejectedSubmissions/rejSubmission.service';
 import { AccSubmissionService } from 'src/modules/acceptedSubmissions/accSubmission.service';
-import { ArticleService } from 'src/modules/Articles/article.service';
+import { ArticleService } from 'src/modules/article/article.service';
 
 describe('ModeratorController', () => {
   let controller: ModeratorController;

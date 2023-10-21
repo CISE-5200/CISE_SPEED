@@ -70,9 +70,7 @@ export class UserService {
         if(user)
         {
             user.role = role;
-            await this.userModel.updateOne({ username: username }, user).exec();
-
-            return true;
+            return (await this.userModel.updateOne({ username: username }, user).exec()).modifiedCount == 1;
         }
 
         return false;

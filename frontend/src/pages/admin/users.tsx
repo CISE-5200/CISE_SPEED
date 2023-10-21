@@ -1,17 +1,20 @@
 import SortableTable, { DisplayFunction } from "@/components/table/SortableTable";
-import { RequestType, Role, User, makeAuthRequest } from "@/lib/auth";
+import { Request, RequestType, Role, User, makeAuthRequest, useAuthRequest } from "@/lib/auth";
 import { useState, useEffect } from "react";
 import Popup from "@/components/popup/Popup";
 
-const UserTable = (props: { adminUser: User | null, users: User[] | null }) => {
+const UserTable = (props: { adminUser: User | null }) => {
     const { adminUser } = props;
+
+    const usersResponse = useAuthRequest('/user/all', RequestType.GET);
     const [users, setUsers] = useState<User[] | null>();
+
+    useEffect(() => {
+      setUsers(usersResponse.data?.users);
+    }, [usersResponse.data]);
+
     const [success, setSuccess] = useState<boolean>(false);
     const [message, setMessage] = useState<string | undefined>();
-  
-    useEffect(() => {
-      setUsers(props.users);
-    }, [props]);
   
     const headers: { key: keyof User; label: string; display?: DisplayFunction | undefined }[] = [
       { key: "username", label: "Username" }
@@ -23,14 +26,14 @@ const UserTable = (props: { adminUser: User | null, users: User[] | null }) => {
       setMessage(undefined);
   
       makeAuthRequest('/user/changeRole', RequestType.POST, adminUser, roleChange).then((response) => {
-        if(response !== undefined && response !== null)
+        setSuccess(response.success);
+
+        if(response.success)
         {
-          setSuccess(response.success);
           setMessage("Applied role change successfully.");
         }
         else
         {
-          setSuccess(false);
           setMessage("Failed to update role.");
         }
       });
@@ -40,19 +43,15 @@ const UserTable = (props: { adminUser: User | null, users: User[] | null }) => {
       setMessage(undefined);
   
       makeAuthRequest('/user/delete', RequestType.POST, adminUser, deletedUser).then((response) => {
-        if(response !== undefined && response !== null)
+        setSuccess(response.success);
+
+        if(response.success)
         {
-          setSuccess(response.success);
           setMessage("Deleted user successfully.");
-  
-          if(users !== undefined && users !== null)
-          {
-            setUsers(users.filter(user => user.username !== deletedUser.username));
-          }
+          usersResponse.update();
         }
         else
         {
-          setSuccess(false);
           setMessage("Failed to delete user.");
         }
       });
@@ -89,7 +88,9 @@ const UserTable = (props: { adminUser: User | null, users: User[] | null }) => {
       return (
         <>
           {message !== undefined && (
-            <Popup message={message} success={success}/>
+            <Popup success={success}>
+              {message}
+            </Popup>
           )}
           <SortableTable headers={headers} data={users} actions={actions}/>
         </>
