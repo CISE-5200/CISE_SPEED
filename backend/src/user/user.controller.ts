@@ -100,37 +100,13 @@ export class UserController {
     }
   }
 
-  async tokenRoleAuth(token: string, role: Role) : Promise<{success: boolean; user?: User;}> {
-    try {
-      const userSession = await this.userService.findBySession(token);
-      
-      if(userSession !== undefined && userSession !== null && await this.userService.verify(userSession.session) && userSession.user.role == role)
-      {
-        return {
-          success: true,
-          user: userSession.user,
-        };
-      }
-      else
-      {
-        return {
-          success: false,
-        };
-      }
-    } catch (err) {
-      return {
-        success: false,
-      };
-    }
-  }
-
   async handleError(err, response) {
     return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ err: { msg: err.message, stack: err.stack }});
   }
 
   @Post("/changeRole") async ChangeRole(@Res() response, @Query("token") token, @Body() dto: UserChangeRoleRequestDTO) {
     try {
-      let authResponse = await this.tokenRoleAuth(token, Role.ADMIN);
+      let authResponse = await this.userService.tokenRoleAuth(token, Role.ADMIN);
       if(authResponse.success) {
         if(dto.user.username !== authResponse.user.username)
         {
@@ -162,7 +138,7 @@ export class UserController {
 
   @Post("/delete") async Delete(@Res() response, @Query("token") token, @Body() dto: UserDTO) {
     try {
-      let authResponse = await this.tokenRoleAuth(token, Role.ADMIN)
+      let authResponse = await this.userService.tokenRoleAuth(token, Role.ADMIN)
       if(authResponse.success) {
         if(dto.username !== authResponse.user.username)
         {
@@ -216,7 +192,7 @@ export class UserController {
 
   @Get("/users?") async Users(@Res() response, @Query("token") token) {
     try {
-      if((await this.tokenRoleAuth(token, Role.ADMIN)).success) {
+      if((await this.userService.tokenRoleAuth(token, Role.ADMIN)).success) {
         let users = await this.userService.getAll();
         let userDTOs = users.map((user) => {
           return new UserDTO(user);

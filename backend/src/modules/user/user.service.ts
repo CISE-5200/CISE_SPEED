@@ -115,10 +115,36 @@ export class UserService {
         return null;
     }
 
-    async verify(session: Session) {
+    verify(session: Session) {
         if(session === undefined)
             return null;
 
         return (new Date().getTime() / 1000) < session.issueTime + session.expiryTime;
     }
+
+
+  async tokenRoleAuth(token: string, role: Role) : Promise<{success: boolean; user?: User;}> {
+    try {
+      const userSession = await this.findBySession(token);
+      
+      if(userSession !== undefined && userSession !== null && this.verify(userSession.session) && userSession.user.role == role)
+      {
+        return {
+          success: true,
+          user: userSession.user,
+        };
+      }
+      else
+      {
+        return {
+          success: false,
+        };
+      }
+    } catch (err) {
+      return {
+        success: false,
+      };
+    }
+  }
+
 }
