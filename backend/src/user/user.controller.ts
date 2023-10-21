@@ -8,209 +8,198 @@ import { UserDTO } from "../dto/user/user.dto";
 import { UserSessionDTO } from "../dto/user/user-session.dto";
 import { Role, User } from "../modules/user/user.schema";
 import { UserChangeRoleRequestDTO } from "src/dto/user/user-change-role-request.dto";
+import { handle, handleAuth } from "src/global";
 
 @Controller("user")
 export class UserController {
   constructor(private readonly submissionService: SubmissionService, private readonly userService: UserService) {}
-  @Post("/submit") async submitArticle(
-    @Res() response,
-    @Body() CreateSubDTO: CreateSubDTO,
-  ) {
-    try {
+  @Post("/submit") async submitArticle(@Res() response, @Body() CreateSubDTO: CreateSubDTO) {
+
+    await handle(response, async () => {
       const newSubmission = await this.submissionService.create(CreateSubDTO);
-      return response.status(HttpStatus.CREATED).json({
-        success: true,
-        newSubmission,
-      });
-    } catch (err) {
-      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ err });
-    }
+      
+      return {
+        data: {
+          success: true,
+        },
+      };
+    });
   }
 
-  @Get("/list") async GetArticles(
-    @Res() response
-  ) {
-    try {
+  @Get("/allArticles") async GetArticles(@Res() response) {
+    await handle(response, async () => {
       const articles = await this.submissionService.findAll();
-      return response.status(HttpStatus.OK).json({
-        success: true,
-        articles,
-      });
-    }
-    catch (err)
-    {
-      return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ err });
-    }
+
+      return {
+        data: {
+          success: true,
+          articles: articles,
+        },
+      };
+    });
   }
 
   @Post("/register") async Register(@Res() response, @Body() dto: CreateUserDTO) {
-    try {
+    await handle(response, async () => {
       const newUser = await this.userService.create(dto);
 
       if(newUser === undefined)
       {
-        return response.status(HttpStatus.NOT_ACCEPTABLE).json({
-          success: false,
-          message: 'Failed to create user.',
-        })
+        return {
+          status: HttpStatus.NOT_ACCEPTABLE,
+          data: {
+            success: false,
+            message: 'Failed to create user.',
+          },
+        };
       }
       else if(newUser === null)
       {
-        return response.status(HttpStatus.OK).json({
-          success: false,
-          message: `A user with the username ${dto.username} already exists.`,
-        })
+        return {
+          data: {
+            success: false,
+            message: `A user with the username ${dto.username} already exists.`,
+          },
+        };
       }
       else
       {
-        return response.status(HttpStatus.CREATED).json({
-          success: true,
-          session: new UserSessionDTO(new UserDTO(newUser.user), newUser.session),
-        });
+        return {
+          data: {
+            success: true,
+            session: new UserSessionDTO(new UserDTO(newUser.user), newUser.session),
+          },
+        };
       }
-    }
-    catch (err) {
-      this.handleError(err, response);
-    }
+    });
   }
 
   @Post("/login") async Login(@Res() response, @Body() userLoginRequest: UserLoginRequestDTO) {
-    try {
+    await handle(response, async () => {
       const user = await this.userService.findByUsername(userLoginRequest.username);
       let session = null;
 
       if(user !== undefined && user !== null && (session = await this.userService.authenticate(userLoginRequest.password, user)))
       {
-        return response.status(HttpStatus.OK).json({
-          success: true,
-          session: new UserSessionDTO(new UserDTO(user), session),
-        });
+        return {
+          data: {
+            success: true,
+            session: new UserSessionDTO(new UserDTO(user), session),
+          },
+        }
       }
       else
       {
-        return response.status(HttpStatus.OK).json({
-          success: false,
-          message: 'Invalid username or password.',
-        });
+        return {
+          data: {
+            success: false,
+            message: 'Invalid username or password.',
+          },
+        };
       }
-    }
-    catch (err)
-    {
-      this.handleError(err, response);
-    }
-  }
-
-  async handleError(err, response) {
-    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ err: { msg: err.message, stack: err.stack }});
+    });
   }
 
   @Post("/changeRole") async ChangeRole(@Res() response, @Query("token") token, @Body() dto: UserChangeRoleRequestDTO) {
-    try {
-      let authResponse = await this.userService.tokenRoleAuth(token, Role.ADMIN);
-      if(authResponse.success) {
-        if(dto.user.username !== authResponse.user.username)
-        {
-          let update = await this.userService.update(dto.user.username, dto.role);
+    await handleAuth(response, this.userService, token, Role.ADMIN, async (user) => {
+      if(dto.user.username !== user.username) {
+        let update = await this.userService.update(dto.user.username, dto.role);
 
-          return response.status(HttpStatus.OK).json({
+        return {
+          data: {
             success: update,
-          });
-        }
-        else
-        {
-          return response.status(HttpStatus.FORBIDDEN).json({
+          },
+        };
+      }
+      else {
+        return {
+          status: HttpStatus.FORBIDDEN,
+          data: {
             success: false,
-          });
-        }
+          },
+        };
       }
-      else
-      {
-        return response.status(HttpStatus.UNAUTHORIZED).json({
+    }, async () => {
+      return {
+        data: {
           success: false,
-        });
-      }
-    }
-    catch (err)
-    {
-      this.handleError(err, response);
-    }
+        },
+      };
+    });
   }
 
   @Post("/delete") async Delete(@Res() response, @Query("token") token, @Body() dto: UserDTO) {
-    try {
-      let authResponse = await this.userService.tokenRoleAuth(token, Role.ADMIN)
-      if(authResponse.success) {
-        if(dto.username !== authResponse.user.username)
-        {
-          let update = await this.userService.delete(dto.username);
+    await handleAuth(response, this.userService, token, Role.ADMIN, async (user) => {
+      if(dto.username !== user.username)
+      {
+        let update = await this.userService.delete(dto.username);
 
-          return response.status(HttpStatus.OK).json({
+        return {
+          data: {
             success: update,
-          });
-        }
-        else
-        {
-          return response.status(HttpStatus.FORBIDDEN).json({
-            success: false,
-          });
-        }
+          },
+        };
       }
       else
       {
-        return response.status(HttpStatus.UNAUTHORIZED).json({
-          success: false,
-        });
+        return {
+          data: {
+            success: false,
+          },
+        };
       }
-    } catch (err) {
-      this.handleError(err, response);
-    }
+    }, async () => {
+      return {
+        data: {
+          success: false,
+        },
+      };
+    });
   }
 
   @Get("/auth?") async Auth(@Res() response, @Query("token") token) {
-    try {
+    await handle(response, async () => {
       const userSession = await this.userService.findBySession(token);
 
       if(userSession !== undefined && userSession !== null && await this.userService.verify(userSession.session))
       {
-        return response.status(HttpStatus.OK).json({
-          success: true,
-          user: new UserDTO(userSession.user),
-        });
+        return {
+          data: {
+            success: true,
+            user: new UserDTO(userSession.user),
+          },
+        };
       }
       else
       {
-        return response.status(HttpStatus.OK).json({
-          success: false,
-        });
+        return {
+          data: {
+            success: false,
+          },
+        };
       }
-    }
-    catch (err)
-    {
-      this.handleError(err, response);
-    }
+    });
   }
 
-  @Get("/users?") async Users(@Res() response, @Query("token") token) {
-    try {
-      if((await this.userService.tokenRoleAuth(token, Role.ADMIN)).success) {
-        let users = await this.userService.getAll();
-        let userDTOs = users.map((user) => {
-          return new UserDTO(user);
-        });
+  @Get("/all?") async Users(@Res() response, @Query("token") token) {
+    await handleAuth(response, this.userService, token, Role.ADMIN, async (_) => {
+      let users = await this.userService.getAll();
+      let userDTOs = users.map((user) => {
+        return new UserDTO(user);
+      });
 
-        return response.status(HttpStatus.OK).json({
+      return {
+        data: {
           success: true,
           users: userDTOs,
-        });
-      } else {
-        return response.status(HttpStatus.UNAUTHORIZED).json({
+        },
+      };
+    }, async () => {
+      return {
+        data: {
           success: false,
-        });
-      }
-    }
-    catch (err)
-    {
-      this.handleError(err, response);
-    }
+        },
+      };
+    });
   }
 }

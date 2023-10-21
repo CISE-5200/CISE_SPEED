@@ -3,7 +3,7 @@ import { RequestType, useRequest } from "@/lib/auth";
 import { useState } from "react";
 
 const AdminArticleTable = () => {
-    const articlesResponse = useRequest('/user/list', RequestType.GET);
+    const articlesResponse = useRequest('/user/allArticles', RequestType.GET);
   
     const [articleQuery, setArticleQuery] = useState<QueryFunction | undefined>(undefined);
   

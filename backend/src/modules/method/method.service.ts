@@ -8,9 +8,16 @@ import { Model } from "mongoose";
 export class MethodService {
     constructor(@InjectModel(Method.name) private methodModel: Model<Method>) {}
 
-    async add(dto: CreateMethodDTO): Promise<Method> {
+    async add(dto: CreateMethodDTO): Promise<boolean> {
         const createdMethod = new this.methodModel(dto);
-        return createdMethod.save();
+
+        if(createdMethod)
+        {
+            return false;
+        }
+        
+        createdMethod.save();
+        return true;
     }
 
     async remove(id: string): Promise<boolean> {

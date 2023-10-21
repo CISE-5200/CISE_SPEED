@@ -202,7 +202,16 @@ export enum RequestType {
     GET,
 };
 
-export const makeAuthRequest = async (uri: string, reqType: RequestType, user: UserType = useAuth(), data: any = {}) : Promise<any> => {
+interface Query {
+    key: string;
+    value: string;
+};
+
+const queriesToString = (queries: Query[]): string => {
+    return queries.map(query => `${query.key}=${query.value}`).join("&");
+}
+
+export const makeAuthRequest = async (uri: string, reqType: RequestType, user: UserType = useAuth(), data: any = {}, queries?: Query[]) : Promise<any> => {
     const session = GetSession();
 
     if(session !== null)
@@ -214,10 +223,10 @@ export const makeAuthRequest = async (uri: string, reqType: RequestType, user: U
             switch(reqType)
             {
                 case RequestType.POST:
-                    response = await axios.post(`${BACKEND_URL}${uri}?token=${session.token}`, data);
+                    response = await axios.post(`${BACKEND_URL}${uri}?token=${session.token}${queries !== undefined && queries !== null && queries.length > 0 ? `&${queriesToString(queries)}` : ``}`, data);
                     break;
                 case RequestType.GET:
-                    response = await axios.get(`${BACKEND_URL}${uri}?token=${session.token}`);
+                    response = await axios.get(`${BACKEND_URL}${uri}?token=${session.token}${queries !== undefined && queries !== null && queries.length > 0 ? `&${queriesToString(queries)}` : ``}`);
                     break;
             }
         }
@@ -233,7 +242,7 @@ export const makeAuthRequest = async (uri: string, reqType: RequestType, user: U
     return null;
 }
 
-export const useAuthRequest = (uri: string, reqType: RequestType, user: UserType = useAuth(), data: any = {}) : any => {
+export const useAuthRequest = (uri: string, reqType: RequestType, user: UserType = useAuth(), data: any = {}, queries?: Query[]) : any => {
     const [responseData, setResponseData] = useState(null);
 
     useEffect(() => {
@@ -259,12 +268,12 @@ export const useAuthRequest = (uri: string, reqType: RequestType, user: UserType
             switch(reqType)
             {
                 case RequestType.POST:
-                    axios.post(`${BACKEND_URL}${uri}?token=${session.token}`, data).then((response) => {
+                    axios.post(`${BACKEND_URL}${uri}?token=${session.token}${queries !== undefined && queries !== null && queries.length > 0 ? `&${queriesToString(queries)}` : ``}`, data).then((response) => {
                         handleData(response.data);
                     });
                     break;
                 case RequestType.GET:
-                    axios.get(`${BACKEND_URL}${uri}?token=${session.token}`).then((response) => {
+                    axios.get(`${BACKEND_URL}${uri}?token=${session.token}${queries !== undefined && queries !== null && queries.length > 0 ? `&${queriesToString(queries)}` : ``}`).then((response) => {
                         handleData(response.data);
                     });
                     break;

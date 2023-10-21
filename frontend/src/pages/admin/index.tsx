@@ -1,4 +1,4 @@
-import { RequestType, Role, getServerSidePropsWithAuth, useAuth, useAuthRequest } from "@/lib/auth";
+import { RequestType, Role, getServerSidePropsWithAuth, useAuth, useAuthRequest, useRequest } from "@/lib/auth";
 import { GetServerSideProps, NextPage } from "next";
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -6,12 +6,13 @@ import 'react-tabs/style/react-tabs.css';
 
 import AdminArticleTable from "./articles";
 import UserTable from "./users";
+import MethodsTable from "./methods";
 
 const AdminPage: NextPage = () => {
   const user = useAuth();
 
-  const usersReponse = useAuthRequest('/user/users', RequestType.GET);
-
+  const usersReponse = useAuthRequest('/user/all', RequestType.GET);
+  const methodsResponse = useRequest('/method/all', RequestType.GET);
 
   return (
     <div className="container">
@@ -30,7 +31,7 @@ const AdminPage: NextPage = () => {
           <AdminArticleTable/>
         </TabPanel>
         <TabPanel>
-          Tab 4
+          <MethodsTable adminUser={user} methods={methodsResponse?.methods}/>
         </TabPanel>
       </Tabs>
     </div>

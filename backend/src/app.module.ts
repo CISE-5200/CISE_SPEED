@@ -26,6 +26,9 @@ import { RejSubmissionService } from "./modules/rejectedSubmissions/rejSubmissio
 import { ArticleService } from "./modules/Articles/article.service";
 import { Session, SessionSchema, User, UserSchema } from "./modules/user/user.schema";
 import { UserService } from "./modules/user/user.service";
+import { Method, MethodSchema } from "./modules/method/method.schema";
+import { MethodController } from "./method/method.controller";
+import { MethodService } from "./modules/method/method.service";
 
 @Module({
   imports: [
@@ -46,6 +49,7 @@ import { UserService } from "./modules/user/user.service";
     MongooseModule.forFeature([{ name: Article.name, schema: ArticleSchema }]),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema}]),
     MongooseModule.forFeature([{ name: Session.name, schema: SessionSchema }]),
+    MongooseModule.forFeature([{ name: Method.name, schema: MethodSchema }]),
   ],
   controllers: [
     AppController,
@@ -53,6 +57,7 @@ import { UserService } from "./modules/user/user.service";
     AdminController,
     ModeratorController,
     AnalystController,
+    MethodController,
   ],
   providers: [
     AppService,
@@ -60,7 +65,8 @@ import { UserService } from "./modules/user/user.service";
     AccSubmissionService,
     RejSubmissionService,
     ArticleService,
-    UserService
+    UserService,
+    MethodService,
   ],
 })
 export class AppModule {}
