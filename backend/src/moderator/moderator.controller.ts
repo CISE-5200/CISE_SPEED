@@ -65,6 +65,7 @@ export class ModeratorController {
     console.log(jsonSub);
     this.rejectedService.create(await jsonSub);
   }
+  /*
   @Get("/demo") async demo() {
     this.submissionService.create({
       title: "The Effects of AI on Human Cognition",
@@ -125,5 +126,5 @@ export class ModeratorController {
     const mergedResults = [...acceptedSubs, ...rejectedSubs, ...articles];
     return mergedResults;
     // return { acceptedSubs, rejectedSubs, articles };
-  }
+  }*/
 }

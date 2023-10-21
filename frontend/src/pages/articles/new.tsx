@@ -17,6 +17,7 @@ const NewDiscussion = () => {
 	const [research, setResearch] = useState("");
 	const [participant, setParticipant] = useState("");
 	const [status, setStatus] = useState("");
+	const [submitMessage, setSubmitMessage] = useState('');
 
 	const [errors, setErrors] = useState({
 		title: '',
@@ -102,6 +103,7 @@ const NewDiscussion = () => {
 
 		if (validateForm()) {
 			console.log('Form is valid and can be submitted');
+			setSubmitMessage('Article submitted for moderation.');
 			// Submit data
 			axios.post(`${BACKEND_URL}/user/submit`, {
 				title: title,
@@ -118,6 +120,10 @@ const NewDiscussion = () => {
 			}).then((response) => {
 				let data = response.data;
 			});
+			setTimeout(() => {
+				//reset submitted message
+				setSubmitMessage('');
+			  }, 3000); // Hide the message after 3 seconds
 		} else {
 			console.log('Form has errors. Please correct them.');
 		}
@@ -243,6 +249,7 @@ const NewDiscussion = () => {
 				<button className={formStyles.formItem} type="submit">
 					Submit
 				</button>
+				<div>{submitMessage}</div>
 			</form>
 		</div>
 	);
