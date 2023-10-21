@@ -15,11 +15,11 @@ const MethodsTable = (props: { adminUser: User | null }) => {
   const { adminUser } = props;
 
   const methodsResponse = useRequest('/method/all', RequestType.GET);
-  const [methods, setMethods] = useState<Method[] | null>();
+  const [methods, setMethods] = useState<Method[]>();
 
   useEffect(() => {
     setMethods(methodsResponse.data?.methods);
-  })
+  }, [methodsResponse.data]);
 
   const [success, setSuccess] = useState<boolean>(false);
   const [message, setMessage] = useState<string | undefined>();
@@ -103,9 +103,7 @@ const MethodsTable = (props: { adminUser: User | null }) => {
           {methods !== undefined && methods !== null && methods.length > 0 ? (
               <>
                   {message !== undefined && (
-                      <Popup success={success}>
-                        {message}
-                      </Popup>
+                      <Popup message={message} success={success}/>
                   )}
 
                   <SortableTable headers={headers} data={methods} actions={actions}/>

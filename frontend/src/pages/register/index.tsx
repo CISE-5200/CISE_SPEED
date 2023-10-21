@@ -50,7 +50,7 @@ const RegisterPage = () => {
       <h1>Registration</h1>
 
     {registrationValid !== null && (
-      <Popup success={registrationValid}>{registrationValid ? successMsg : registrationMessage}</Popup>
+      <Popup message={registrationValid ? successMsg : registrationMessage} success={registrationValid}/>
     )}
 
       <form className={formStyles.form} onSubmit={submitRegistration} action="#">

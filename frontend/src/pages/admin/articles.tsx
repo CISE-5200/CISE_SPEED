@@ -2,7 +2,7 @@ import ArticleEditor from "@/components/editor/ArticleEditor";
 import Popup from "@/components/popup/Popup";
 import ArticleTable, { ArticlesInterface, QueryFunction } from "@/components/table/ArticleTable";
 import { RequestType, User, makeAuthRequest, useRequest } from "@/lib/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface AdminArticleTableProps {
   adminUser: User | null;
@@ -10,11 +10,17 @@ interface AdminArticleTableProps {
 
 const AdminArticleTable = (props: AdminArticleTableProps) => {
   const articlesResponse = useRequest('/article/all', RequestType.GET);
-  
+  const [articles, setArticles] = useState<ArticlesInterface[]>();
+
+  useEffect(() => {
+    setArticles(articlesResponse.data?.articles);
+  }, [articlesResponse.data]);
+
   const [articleQuery, setArticleQuery] = useState<QueryFunction | undefined>(undefined);
   const [edit, setEdit] = useState<ArticlesInterface>();
 
-  const [success, setSuccess] = useState<boolean | undefined>(undefined);
+  const [success, setSuccess] = useState<boolean>();
+  const [message, setMessage] = useState<string | undefined>();
 
   const editArticle = (article: ArticlesInterface) => {
     setEdit(article);
@@ -38,7 +44,12 @@ const AdminArticleTable = (props: AdminArticleTableProps) => {
 
       if(response.success)
       {
+        setMessage("Successfully updated article.");
         articlesResponse.update();
+      }
+      else
+      {
+        setMessage("Failed to update article.");
       }
     });
   };
@@ -65,6 +76,10 @@ const AdminArticleTable = (props: AdminArticleTableProps) => {
 
   return (
     <>
+      {message !== undefined && (
+        <Popup message={message} success={success}/>
+      )}
+
       {edit !== undefined && (
         <Popup>
           <ArticleEditor article={edit} visible={edit !== undefined} submit="Save" onSubmit={onEditedArticleSaved} onCancel={() => setEdit(undefined)}/>
@@ -72,7 +87,7 @@ const AdminArticleTable = (props: AdminArticleTableProps) => {
       )}
 
       <input type="text" placeholder="Search for an article..." onInput={articleSearch}/>
-      <ArticleTable articles={articlesResponse.data?.articles} actions={articleActions} query={articleQuery}/>
+      <ArticleTable articles={articles} actions={articleActions} query={articleQuery}/>
     </>
   );
 };

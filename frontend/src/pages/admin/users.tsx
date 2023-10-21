@@ -88,9 +88,7 @@ const UserTable = (props: { adminUser: User | null }) => {
       return (
         <>
           {message !== undefined && (
-            <Popup success={success}>
-              {message}
-            </Popup>
+            <Popup message={message} success={success}/>
           )}
           <SortableTable headers={headers} data={users} actions={actions}/>
         </>

@@ -51,9 +51,7 @@ const LoginPage: NextPage = () => {
       <h1>Login</h1>
 
       {loginValid !== null && (
-        <Popup success={loginValid}>
-          {loginValid ? successMsg : loginMessage}
-        </Popup>
+        <Popup message={loginValid ? successMsg : loginMessage} success={loginValid}/>
       )}
 
       <form className={formStyles.form} onSubmit={submitLogin} action="#">
