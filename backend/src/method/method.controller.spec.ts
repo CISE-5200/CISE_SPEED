@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MethodController } from './method.controller';
 import { getModelToken } from '@nestjs/mongoose';
 import { UserService } from '../modules/user/user.service';
-import { MethodService } from 'src/modules/method/method.service';
+import { MethodService } from '../modules/method/method.service';
 
 describe('MethodController', () => {
   let controller: MethodController;

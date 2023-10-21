@@ -4,9 +4,9 @@ import { UserLoginRequestDTO } from "../dto/user/user-login-request.dto";
 import { CreateUserDTO } from "../dto/user/create-User.dto";
 import { UserDTO } from "../dto/user/user.dto";
 import { UserSessionDTO } from "../dto/user/user-session.dto";
-import { Role, User } from "../modules/user/user.schema";
-import { UserChangeRoleRequestDTO } from "src/dto/user/user-change-role-request.dto";
-import { handle, handleAuth } from "src/global";
+import { Role } from "../modules/user/user.schema";
+import { UserChangeRoleRequestDTO } from "../dto/user/user-change-role-request.dto";
+import { handle, handleAuth } from "../global";
 
 @Controller("user")
 export class UserController {

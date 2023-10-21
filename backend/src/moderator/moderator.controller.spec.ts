@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ModeratorController } from './moderator.controller';
-import { SubmissionService } from 'src/modules/submission/submission.service';
+import { SubmissionService } from '../modules/submission/submission.service';
 import { getModelToken } from '@nestjs/mongoose';
-import { RejSubmissionService } from 'src/modules/rejectedSubmissions/rejSubmission.service';
-import { AccSubmissionService } from 'src/modules/acceptedSubmissions/accSubmission.service';
-import { ArticleService } from 'src/modules/article/article.service';
+import { RejSubmissionService } from '../modules/rejectedSubmissions/rejSubmission.service';
+import { AccSubmissionService } from '../modules/acceptedSubmissions/accSubmission.service';
+import { ArticleService } from '../modules/article/article.service';
 
 describe('ModeratorController', () => {
   let controller: ModeratorController;

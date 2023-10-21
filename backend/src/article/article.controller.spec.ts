@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ArticleController } from './article.controller';
 import { getModelToken } from '@nestjs/mongoose';
 import { UserService } from '../modules/user/user.service';
-import { ArticleService } from 'src/modules/article/article.service';
+import { ArticleService } from '../modules/article/article.service';
 
 describe('ArticleController', () => {
   let controller: ArticleController;

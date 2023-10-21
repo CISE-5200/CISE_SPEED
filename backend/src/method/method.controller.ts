@@ -1,9 +1,9 @@
 import { Body, Controller, Get, HttpStatus, Post, Query, Res } from "@nestjs/common";
-import { CreateMethodDTO } from "src/dto/method/create-method.dto";
-import { handle, handleAuth } from "src/global";
-import { MethodService } from "src/modules/method/method.service";
-import { Role } from "src/modules/user/user.schema";
-import { UserService } from "src/modules/user/user.service";
+import { CreateMethodDTO } from "../dto/method/create-method.dto";
+import { handle, handleAuth } from "../global";
+import { MethodService } from "../modules/method/method.service";
+import { Role } from "../modules/user/user.schema";
+import { UserService } from "../modules/user/user.service";
 
 @Controller("method")
 export class MethodController {

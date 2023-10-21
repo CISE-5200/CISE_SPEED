@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post, Res } from "@nestjs/common";
-import { CreateArticleDTO } from "src/dto/create-Article.dto";
+import { CreateArticleDTO } from "../dto/create-Article.dto";
 import { handle, handleAuth } from "../global";
-import { ArticleService } from "src/modules/article/article.service";
-import { UserService } from "src/modules/user/user.service";
-import { Role } from "src/modules/user/user.schema";
+import { ArticleService } from "../modules/article/article.service";
+import { UserService } from "../modules/user/user.service";
+import { Role } from "../modules/user/user.schema";
 
 @Controller("article")
 export class ArticleController {

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Method } from "./method.schema";
-import { CreateMethodDTO } from "src/dto/method/create-method.dto";
+import { CreateMethodDTO } from "../../dto/method/create-method.dto";
 import { Model } from "mongoose";
 
 @Injectable()
