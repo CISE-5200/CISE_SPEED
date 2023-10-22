@@ -2,15 +2,14 @@ import { Model, ObjectId, Types } from "mongoose";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Submission } from "./submission.schema";
-import { CreateSubDTO } from "../../dto/create-Sub.dto";
-
+import { CreateArticleDTO } from "src/dto/create-Article.dto";
 @Injectable()
 export class SubmissionService {
   constructor(
     @InjectModel(Submission.name) private submissionModel: Model<Submission>,
   ) {}
 
-  async create(createSubDto: CreateSubDTO): Promise<Submission> {
+  async create(createSubDto: CreateArticleDTO): Promise<Submission> {
     const createdSub = new this.submissionModel(createSubDto);
     return createdSub.save();
   }
@@ -19,12 +18,12 @@ export class SubmissionService {
     return this.submissionModel.find().exec();
   }
   async findByID(id: ObjectId): Promise<Submission> {
-    console.log(await this.submissionModel.findOne({ _id: id }).exec());
+    console.log(await this.submissionModel.findOne({ _ID: id }).exec());
     return null;
   }
   async findThenDestroy(id): Promise<Submission> {
     const objectId = new Types.ObjectId(id);
-    const result = this.submissionModel.findOneAndDelete({ _id: id }).exec();
+    const result = this.submissionModel.findOneAndDelete({ _ID: id }).exec();
     if (result) {
       const resultObject = result;
       delete (await resultObject)._id;

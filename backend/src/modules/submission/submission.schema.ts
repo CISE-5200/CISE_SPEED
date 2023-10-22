@@ -6,37 +6,37 @@ export type SubmissionDocument = HydratedDocument<Submission>;
 
 @Schema()
 export class Submission {
-  @Prop()
+  @Prop({ required: true })
   title: string;
 
-  @Prop()
+  @Prop([String])
   authors: string[];
 
-  @Prop()
+  @Prop({ required: true })
   journalName: string;
 
-  @Prop()
+  @Prop({ required: true })
   pubYear: string;
 
-  @Prop()
+  @Prop({ required: true })
   source: string;
 
-  @Prop()
+  @Prop({ required: true })
   DOI: string;
 
-  @Prop()
+  @Prop({ required: true })
   method: string;
 
-  @Prop()
+  @Prop({ required: true })
   claim: string;
 
-  @Prop()
+  @Prop({ required: true })
   result: string;
 
-  @Prop()
+  @Prop({ required: true })
   researchType: string;
 
-  @Prop()
+  @Prop({ required: true })
   abstract: string;
 }
 

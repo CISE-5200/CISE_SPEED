@@ -1,4 +1,6 @@
 export class CreateArticleDTO {
+  readonly _ID: string;
+
   title: string;
 
   authors: string[];

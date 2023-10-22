@@ -2,7 +2,9 @@ import { Model } from "mongoose";
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { AccSubmission } from "./accSubmission.schema";
-import { CreateSubDTO } from "../../dto/create-Sub.dto";
+import { Submission } from "../submission/submission.schema";
+import { CreateArticleDTO } from "src/dto/create-Article.dto";
+import { log } from "console";
 
 @Injectable()
 export class AccSubmissionService {
@@ -11,8 +13,9 @@ export class AccSubmissionService {
     private accSubmissionModel: Model<AccSubmission>,
   ) {}
 
-  async create(createSubDto: CreateSubDTO): Promise<AccSubmission> {
-    const createdSub = new this.accSubmissionModel(createSubDto);
+  async create(createArticleDto: CreateArticleDTO): Promise<AccSubmission> {
+    const createdSub = new this.accSubmissionModel(createArticleDto);
+    console.log(createdSub);
     return createdSub.save();
   }
 
@@ -20,13 +23,19 @@ export class AccSubmissionService {
     return this.accSubmissionModel.find().exec();
   }
   async findByTitleOrDOI(title: string, doi: string): Promise<AccSubmission[]> {
-    console.log("Received title:", title, "Received DOI:", doi);
     const results = await this.accSubmissionModel
       .find({
         $or: [{ title: title }, { doi: doi }],
       })
       .exec();
-    console.log("Query results:", results);
     return results;
+  }
+  async removeSubmission(id): Promise<boolean> {
+    try {
+      const result = this.accSubmissionModel.deleteOne({ _ID: id }).exec();
+      return true;
+    } catch (err) {
+      return false;
+    }
   }
 }

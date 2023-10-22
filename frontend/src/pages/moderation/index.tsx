@@ -16,7 +16,7 @@ export default function moderation() {
   }, []);
   useEffect(() => {
     buildSimilarTable();
-  }, [selectedPage, buildSimilarTable]);
+  }, [selectedPage]);
 
   const getSubmissionData = async () => {
     try {
@@ -49,7 +49,7 @@ export default function moderation() {
     }
   };
   const handleReview = async (_ID: string) => {
-    const selected = submissionData.find((p) => p._id === _ID);
+    const selected = submissionData.find((p) => p._ID === _ID);
     setSelectedPage(await selected);
     setModerationSection(false);
   };
@@ -73,28 +73,29 @@ export default function moderation() {
           <tbody>
             {submissionData &&
               submissionData.map((submission) => (
-                <tr key={submission._id}>
+                <tr key={submission._ID}>
                   <td>{submission.title}</td>
                   <td>{submission.authors.join(", ")}</td>
-                  <td>{submission.date}</td>
-                  <td>{submission.journal}</td>
-                  <td>{submission.volume}</td>
-                  <td>{submission.issue}</td>
-                  <td>
-                    {submission.pageRange[0]} - {submission.pageRange[1]}
-                  </td>
+                  <td>{submission.journalName}</td>
+                  <td>{submission.pubYear}</td>
+                  <td>{submission.source}</td>
                   <td>
                     <a
-                      href={`https://doi.org/${submission.doi}`}
+                      href={`https://doi.org/${submission.DOI}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {submission.doi}
+                      {submission.DOI}
                     </a>
                   </td>
+                  <td>{submission.method}</td>
+                  <td>{submission.claim}</td>
+                  <td>{submission.result}</td>
+                  <td>{submission.researchType}</td>
+                  <td>{submission.abstract}</td>
 
                   <td>
-                    <button onClick={() => handleReview(submission._id)}>
+                    <button onClick={() => handleReview(submission._ID)}>
                       Review
                     </button>
                   </td>
@@ -112,7 +113,7 @@ export default function moderation() {
 
     try {
       const response = await axios.get(`${BACKEND_URL}/moderator/similar/`, {
-        params: { title: selectedPage.title, doi: selectedPage.doi },
+        params: { title: selectedPage.title, doi: selectedPage.DOI },
       });
       console.log("similar items:", response.data);
       setSimilarItems(response.data);
@@ -133,24 +134,26 @@ export default function moderation() {
               <th>Authors</th>
               <th>Journal</th>
               <th>DOI</th>
+              <th>Type</th>
             </tr>
           </thead>
           <tbody>
             {similarItems &&
               similarItems.map((item) => (
-                <tr key={item._id}>
+                <tr key={item._ID}>
                   <td>{item.title}</td>
                   <td>{item.authors.join(", ")}</td>
-                  <td>{item.journal}</td>
+                  <td>{item.journalName}</td>
                   <td>
                     <a
-                      href={`https://doi.org/${item.doi}`}
+                      href={`https://doi.org/${item.DOI}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {item.doi}
+                      {item.DOI}
                     </a>
                   </td>
+                  <td>{item.type}</td>
                 </tr>
               ))}
           </tbody>
@@ -159,7 +162,6 @@ export default function moderation() {
     );
   }
 
-  let similarTable = <div></div>;
   function buildReviewTable() {
     if (!selectedPage) return <div>no table selected</div>;
     return (
@@ -168,31 +170,39 @@ export default function moderation() {
           <div className="reviewTable">
             <ul className="headerTop">Title:</ul>
             <ul>{selectedPage.title}</ul>
-            <ul className="header">authers:</ul>
-            <ul>{selectedPage.authors.join(" , ")}</ul>
-            <ul className="header">journal:</ul>
-            <ul>{selectedPage.journal}</ul>
-            <ul className="header">issue:</ul>
-            <ul>{selectedPage.issue}</ul>
-            <ul className="header">volume:</ul>
-            <ul>{selectedPage.volume}</ul>
-            <ul className="header">doi:</ul>
-            <ul>{selectedPage.doi}</ul>
-            <ul className="header">summary:</ul>
-            <ul>{selectedPage.summary}</ul>
+            <ul className="header">Authors:</ul>
+            <ul>{selectedPage.authors.join(", ")}</ul>
+            <ul className="header">Journal Name:</ul>
+            <ul>{selectedPage.journalName}</ul>
+            <ul className="header">Publication Year:</ul>
+            <ul>{selectedPage.pubYear}</ul>
+            <ul className="header">Source:</ul>
+            <ul>{selectedPage.source}</ul>
+            <ul className="header">DOI:</ul>
+            <ul>{selectedPage.DOI}</ul>
+            <ul className="header">Method:</ul>
+            <ul>{selectedPage.method}</ul>
+            <ul className="header">Claim:</ul>
+            <ul>{selectedPage.claim}</ul>
+            <ul className="header">Result:</ul>
+            <ul>{selectedPage.result}</ul>
+            <ul className="header">Research Type:</ul>
+            <ul>{selectedPage.researchType}</ul>
+            <ul className="header">Abstract:</ul>
+            <ul>{selectedPage.abstract}</ul>
           </div>
           {SimilarItemsTable()}
           <br />
         </div>
         <div className="buttonsSection">
           <button
-            onClick={() => handleApprove(selectedPage._id)}
+            onClick={() => handleApprove(selectedPage._ID)}
             className="reviewButton"
           >
             Approve
           </button>
           <button
-            onClick={() => handleDeny(selectedPage._id)}
+            onClick={() => handleDeny(selectedPage._ID)}
             className="reviewButton"
           >
             Deny
