@@ -1,15 +1,23 @@
-import { Body, Controller, Post } from "@nestjs/common";
+import { Body, Controller, Post, Res } from "@nestjs/common";
 import { CreateArticleDTO } from "../dto/create-Article.dto";
 import { SubmissionService } from "../modules/submission/submission.service";
+import { handle } from "src/global";
 
 @Controller("submission")
 export class SubmissionController {
   constructor(private readonly submissionService: SubmissionService) {}
 
-  @Post("/submit") async postSubmission(
+  @Post("/submit") async postSubmission(@Res() response,
     @Body() createArticleDTO: CreateArticleDTO,
   ) {
-    console.log(createArticleDTO);
-    this.submissionService.create(createArticleDTO);
+    await handle(response, async () => {
+      let update = await this.submissionService.create(createArticleDTO);
+
+      return {
+        data: {
+          success: update,
+        }
+      };
+    });
   }
 }

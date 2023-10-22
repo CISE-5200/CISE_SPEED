@@ -3,12 +3,25 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { article } from "@/schemas/article.schema";
 import axios from "axios";
 import "../../styles/globals.scss";
+import { RequestType, useRequest } from "@/lib/auth";
 import BACKEND_URL from "@/global";
+
+interface Method {
+  id: string;
+  name: string;
+}
 
 export default function analyst() {
   const [submissionData, setSubmissionData] = useState<article[]>([]);
   const [moderationSection, setModerationSection] = useState(true);
   const [selectedPage, setSelectedPage] = useState<article>();
+
+  const methodsResponse = useRequest('/method/all', RequestType.GET);
+  const [methods, setMethods] = useState<Method[]>();
+
+  useEffect(() => {
+    setMethods(methodsResponse.data?.methods);
+  }, [methodsResponse.data]);
 
   useEffect(() => {
     getSubmissionData();
@@ -148,7 +161,7 @@ export default function analyst() {
     };
 
     // Event handler for editing the method
-    const handleMethodChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleMethodChange = (e: ChangeEvent<HTMLSelectElement>) => {
       setSelectedPage({
         ...selectedPage,
         method: e.target.value,
@@ -238,12 +251,17 @@ export default function analyst() {
           />
 
           <div className="header">Method:</div>
-          <input
-            type="text"
+          <select
             className="analystInput"
-            value={selectedPage.method}
+            id="method"
+            name="method"
             onChange={handleMethodChange}
-          />
+            defaultValue={selectedPage.method}
+          >
+            {methods?.map((method) => (
+              <option key={method.id} value={method.id}>{method.name}</option>
+            ))}
+        </select>
 
           <div className="header">Claim:</div>
           <input

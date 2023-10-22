@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Res } from "@nestjs/common";
+import { Body, Controller, Get, Query, Post, Res } from "@nestjs/common";
 import { CreateArticleDTO } from "../dto/create-Article.dto";
 import { handle, handleAuth } from "../global";
 import { ArticleService } from "../modules/article/article.service";
@@ -34,12 +34,13 @@ export class ArticleController {
         });
     }
 
-    @Post("/update") async Update(@Res() response, @Param("token") token, @Body() dto: CreateArticleDTO) {
-        // TODO: check that user has permission to update article.
+    @Post("/update") async Update(@Res() response, @Query("token") token, @Body() dto: CreateArticleDTO) {
         await handleAuth(response, this.userService, token, Role.ADMIN, async (_) => {
+            let update = await this.articleService.update(dto._ID, dto);
+
             return {
                 data: {
-                    success: false,
+                    success: update,
                 },
             };
         }, async () => {

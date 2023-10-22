@@ -89,6 +89,7 @@ export class UserService {
         }
 
         let user = await this.userModel.findOne({ username: session.username }).exec();
+
         return {
             user: user,
             session: session,

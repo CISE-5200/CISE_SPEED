@@ -33,6 +33,7 @@ const SearchPage = () => {
 
 		let filteredArticles: ArticlesInterface[] = articles?.filter((article) => article?.method === method).map(article => article as ArticlesInterface);
 		setFilteredArticles(filteredArticles);
+		console.log(filteredArticles);
 	};
 
 	if(filteredArticles === null)
@@ -73,11 +74,11 @@ const SearchPage = () => {
 			}
 			else
 			{
-				setFilteredArticlesByYear(filteredArticles.filter((article) => article?.date?.getFullYear() === parseInt(event.currentTarget.value)));
+				setFilteredArticlesByYear(filteredArticles.filter((article) => !isNaN(Number(article?.pubYear)) && Number(article?.pubYear) === parseInt(event.currentTarget.value)));
 			}
 		};
 
-		const filteredArticlesYears = filteredArticles.filter((article) => !isNaN(article?.date?.getFullYear())).map((article) => article?.date?.getFullYear()).filter(onlyUnique);
+		const filteredArticlesYears = filteredArticles.filter((article) => !isNaN(Number(article?.pubYear))).map((article) => article?.pubYear).filter(onlyUnique);
 
 		return (
 			<div className="container">
