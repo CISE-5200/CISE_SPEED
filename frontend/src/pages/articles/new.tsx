@@ -1,11 +1,21 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import formStyles from "../../styles/Form.module.scss";
-import axios from "axios";
-import BACKEND_URL from "@/global";
-import { RequestType, makeRequest } from "@/lib/auth";
+import { RequestType, makeRequest, useRequest } from "@/lib/auth";
 import Popup from "@/components/popup/Popup";
 
+interface Method {
+  id: string;
+  name: string;
+};
+
 const NewDiscussion = () => {
+  const methodsResponse = useRequest('/method/all', RequestType.GET);
+  const [methods, setMethods] = useState<Method[]>();
+
+  useEffect(() => {
+    setMethods(methodsResponse.data?.methods);
+  }, [methodsResponse.data]);
+
   const [title, setTitle] = useState("");
   const [authors, setAuthors] = useState<string[]>([""]);
   const [year, setYear] = useState<number>(1990);
@@ -280,9 +290,9 @@ const NewDiscussion = () => {
             setMethod(event.target.value);
           }}
         >
-          <option value="TDD">TDD</option>
-          <option value="Mob Programming">Mob Progarmming</option>
-          <option value="Automated Testing">Automated Testing</option>
+          {methods?.map((method) => (
+            <option key={method.id} value={method.id}>{method.name}</option>
+          ))}
         </select>
         <label htmlFor="research">Research Type:</label>
         <input
