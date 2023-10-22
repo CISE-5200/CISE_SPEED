@@ -1,8 +1,8 @@
 import { Body, Controller, Get, HttpStatus, Post, Res } from "@nestjs/common";
-import { CreateArticleDTO } from "src/dto/create-Article.dto";
-import { AccSubmissionService } from "src/modules/acceptedSubmissions/accSubmission.service";
-import { Article } from "src/modules/article/article.schema";
-import { ArticleService } from "src/modules/article/article.service";
+import { CreateArticleDTO } from "../dto/create-Article.dto";
+import { AccSubmissionService } from "../modules/acceptedSubmissions/accSubmission.service";
+import { Article } from "../modules/article/article.schema";
+import { ArticleService } from "../modules/article/article.service";
 
 @Controller("analyst")
 export class AnalystController {
