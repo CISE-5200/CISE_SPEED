@@ -68,10 +68,10 @@ export class ModeratorController {
     this.submissionService.create({
       title: "Sample Title 1",
       authors: ["Author 1", "Author 2"],
-      journalName: "Journal 1",
-      pubYear: "2022",
+      journal: "Journal 1",
+      year: "2022",
       source: "Source 1",
-      DOI: "DOI 1",
+      doi: "DOI 1",
       method: "Method 1",
       claim: "Claim 1",
       result: "Result 1",

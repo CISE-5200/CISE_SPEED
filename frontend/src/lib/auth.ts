@@ -244,6 +244,33 @@ export const makeAuthRequest = async (uri: string, reqType: RequestType, user: U
     };
 }
 
+export const makeRequest = async (uri: string, reqType: RequestType, data: any = {}, queries?: Query[]) : Promise<any> => {
+    try
+    {
+        let response = null;
+
+        switch(reqType)
+        {
+            case RequestType.POST:
+                response = await axios.post(`${BACKEND_URL}${uri}?${queries !== undefined && queries !== null && queries.length > 0 ? `&${queriesToString(queries)}` : ``}`, data);
+                break;
+            case RequestType.GET:
+                response = await axios.get(`${BACKEND_URL}${uri}?${queries !== undefined && queries !== null && queries.length > 0 ? `&${queriesToString(queries)}` : ``}`);
+                break;
+        }
+
+        return response.data;
+    }
+    catch (err)
+    {
+
+    }
+
+    return {
+        success: false,
+    };
+}
+
 export interface Request {
     update: () => void;
     data?: any;
