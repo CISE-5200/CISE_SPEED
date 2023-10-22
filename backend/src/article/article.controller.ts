@@ -36,7 +36,7 @@ export class ArticleController {
 
     @Post("/update") async Update(@Res() response, @Query("token") token, @Body() dto: CreateArticleDTO) {
         await handleAuth(response, this.userService, token, Role.ADMIN, async (_) => {
-            let update = await this.articleService.update(dto._ID, dto);
+            let update = await this.articleService.update(dto);
 
             return {
                 data: {
