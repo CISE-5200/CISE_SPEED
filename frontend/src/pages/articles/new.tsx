@@ -2,6 +2,7 @@ import { FormEvent, useState } from "react";
 import formStyles from "../../styles/Form.module.scss";
 import axios from "axios";
 import BACKEND_URL from "@/global";
+import { article } from "@/schemas/article.schema";
 
 const NewDiscussion = () => {
   const [title, setTitle] = useState("");
@@ -15,6 +16,7 @@ const NewDiscussion = () => {
   const [result, setResult] = useState("");
   const [research, setResearch] = useState("");
   const [abstract, setAbstract] = useState("");
+  const [participant, setParticipant] = useState("");
 
   const [submitMessage, setSubmitMessage] = useState("");
 
@@ -96,6 +98,10 @@ const NewDiscussion = () => {
       newErrors.abstract = "Abstract is required";
       isValid = false;
     }
+    if (participant.trim() === "") {
+      newErrors.participant = "Participant is required";
+      isValid = false;
+    }
 
     setErrors(newErrors);
     return isValid;
@@ -104,39 +110,31 @@ const NewDiscussion = () => {
   const submitNewArticle = async (event: FormEvent<HTMLFormElement>) => {
     setResult("Unclear");
     event.preventDefault();
-    console.log(
-      JSON.stringify({
-        title,
-        authors,
-        year,
-        journal,
-        source,
-        doi,
-        method,
-        claim,
-        result,
-        research,
-        abstract,
-      })
-    );
+    const submissionObject: article = {
+      title: title,
+      authors: authors,
+      journalName: journal,
+      pubYear: year.toString(),
+      source: source,
+      DOI: doi,
+      method: method,
+      claim: claim,
+      result: result,
+      researchType: research,
+      abstract: abstract,
+      _ID: "",
+      type: "",
+      participant: participant,
+    };
+    console.log(submissionObject);
 
     if (validateForm()) {
       console.log("Form is valid and can be submitted");
       setSubmitMessage("Article submitted for moderation.");
       // Submit data
       axios
-        .post(`${BACKEND_URL}/article/submit`, {
-          title: title,
-          authors: authors,
-          journal: journal,
-          year: year,
-          source: source,
-          doi: doi,
-          method: method,
-          claim: claim,
-          result: result,
-          researchType: research,
-          abstract: abstract,
+        .post(`${BACKEND_URL}/submission/submit`, {
+          ...submissionObject,
         })
         .then((response) => {
           let data = response.data;
@@ -171,6 +169,7 @@ const NewDiscussion = () => {
         Submit a new article in the SPEED Database
       </h1>
       <form className={formStyles.form} onSubmit={submitNewArticle}>
+        <div className={formStyles.error}>{errors.title}</div>
         <label htmlFor="title">Title:</label>
         <input
           className={formStyles.formItem}
@@ -182,7 +181,7 @@ const NewDiscussion = () => {
             setTitle(event.target.value);
           }}
         />
-        <div className={formStyles.error}>{errors.title}</div>
+        <div className={formStyles.error}>{errors.authors}</div>
         <label htmlFor="author">Authors:</label>
         {authors.map((author, index) => {
           return (
@@ -213,7 +212,7 @@ const NewDiscussion = () => {
         >
           +
         </button>
-        <div className={formStyles.error}>{errors.authors}</div>
+        <div className={formStyles.error}>{errors.year}</div>
         <label htmlFor="pubYear">Publication Year:</label>
         <input
           className={formStyles.formItem}
@@ -230,7 +229,7 @@ const NewDiscussion = () => {
             }
           }}
         />
-        <div className={formStyles.error}>{errors.year}</div>
+        <div className={formStyles.error}>{errors.journal}</div>
         <label htmlFor="journal">Journal:</label>
         <input
           className={formStyles.formItem}
@@ -242,7 +241,7 @@ const NewDiscussion = () => {
             setJournal(event.target.value);
           }}
         />
-        <div className={formStyles.error}>{errors.journal}</div>
+        <div className={formStyles.error}>{errors.source}</div>
         <label htmlFor="source">Source:</label>
         <input
           className={formStyles.formItem}
@@ -254,7 +253,7 @@ const NewDiscussion = () => {
             setSource(event.target.value);
           }}
         />
-        <div className={formStyles.error}>{errors.source}</div>
+        <div className={formStyles.error}>{errors.doi}</div>
         <label htmlFor="doi">DOI:</label>
         <input
           className={formStyles.formItem}
@@ -266,7 +265,7 @@ const NewDiscussion = () => {
             setDoi(event.target.value);
           }}
         />
-        <div className={formStyles.error}>{errors.doi}</div>
+        <div className={formStyles.error}>{errors.claim}</div>
         <label htmlFor="claim">Claim:</label>
         <input
           className={formStyles.formItem}
@@ -292,6 +291,7 @@ const NewDiscussion = () => {
           <option value="Mob Programming">Mob Progarmming</option>
           <option value="Automated Testing">Automated Testing</option>
         </select>
+        <div className={formStyles.error}>{errors.research}</div>
         <label htmlFor="research">Research Type:</label>
         <input
           className={formStyles.formItem}
@@ -303,7 +303,15 @@ const NewDiscussion = () => {
             setResearch(event.target.value);
           }}
         />
-        <div className={formStyles.error}>{errors.research}</div>
+        <div className={formStyles.error}>{errors.participant}</div>
+        <label htmlFor="Participent">Participent:</label>
+        <textarea
+          className={formStyles.formTextArea}
+          name="Participent"
+          value={participant}
+          onChange={(event) => setParticipant(event.target.value)}
+        />
+        <div className={formStyles.error}>{errors.abstract}</div>
         <label htmlFor="abstract">Abstract:</label>
         <textarea
           className={formStyles.formTextArea}
@@ -311,7 +319,6 @@ const NewDiscussion = () => {
           value={abstract}
           onChange={(event) => setAbstract(event.target.value)}
         />
-        <div className={formStyles.error}>{errors.abstract}</div>
         <button className={formStyles.formItem} type="submit">
           Submit
         </button>

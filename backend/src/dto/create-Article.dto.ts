@@ -13,6 +13,8 @@ export class CreateArticleDTO {
 
   DOI: string;
 
+  participant: string;
+
   method: string;
 
   claim: string;
@@ -22,4 +24,5 @@ export class CreateArticleDTO {
   researchType: string;
 
   abstract: string;
+  type: string;
 }

@@ -78,6 +78,8 @@ export class ModeratorController {
       researchType: "Research Type 1",
       abstract: "Abstract 1",
       _ID: "",
+      participant: "",
+      type: "",
     });
   }
   @Get("/similar/") async getSimilar(
@@ -140,5 +142,4 @@ export class ModeratorController {
     const mergedResults = [...acceptedSubs, ...rejectedSubs, ...articles];
     return mergedResults;
   }
-  */
 }
