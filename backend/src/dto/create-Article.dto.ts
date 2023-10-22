@@ -5,13 +5,13 @@ export class CreateArticleDTO {
 
   authors: string[];
 
-  journalName: string;
+  journal: string;
 
-  pubYear: string;
+  year: string;
 
   source: string;
 
-  DOI: string;
+  doi: string;
 
   method: string;
 

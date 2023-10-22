@@ -2,6 +2,8 @@ import { FormEvent, useState } from "react";
 import formStyles from "../../styles/Form.module.scss";
 import axios from "axios";
 import BACKEND_URL from "@/global";
+import { RequestType, makeRequest } from "@/lib/auth";
+import Popup from "@/components/popup/Popup";
 
 const NewDiscussion = () => {
   const [title, setTitle] = useState("");
@@ -16,7 +18,8 @@ const NewDiscussion = () => {
   const [research, setResearch] = useState("");
   const [abstract, setAbstract] = useState("");
 
-  const [submitMessage, setSubmitMessage] = useState("");
+  const [submitValid, setSubmitValid] = useState<boolean>();
+  const [submitMessage, setSubmitMessage] = useState<string | undefined>(undefined);
 
   const [errors, setErrors] = useState({
     title: "",
@@ -104,49 +107,35 @@ const NewDiscussion = () => {
   const submitNewArticle = async (event: FormEvent<HTMLFormElement>) => {
     setResult("Unclear");
     event.preventDefault();
-    console.log(
-      JSON.stringify({
-        title,
-        authors,
-        year,
-        journal,
-        source,
-        doi,
-        method,
-        claim,
-        result,
-        research,
-        abstract,
-      })
-    );
 
     if (validateForm()) {
-      console.log("Form is valid and can be submitted");
-      setSubmitMessage("Article submitted for moderation.");
+
       // Submit data
-      axios
-        .post(`${BACKEND_URL}/article/submit`, {
-          title: title,
-          authors: authors,
-          journal: journal,
-          year: year,
-          source: source,
-          doi: doi,
-          method: method,
-          claim: claim,
-          result: result,
-          researchType: research,
-          abstract: abstract,
-        })
-        .then((response) => {
-          let data = response.data;
-        });
-      setTimeout(() => {
-        //reset submitted message
-        setSubmitMessage("");
-      }, 3000); // Hide the message after 3 seconds
+
+	  makeRequest('/article/submit', RequestType.POST, {
+		title: title,
+		authors: authors,
+		journal: journal,
+		year: year,
+		source: source,
+		doi: doi,
+		method: method,
+		claim: claim,
+		result: result,
+		researchType: research,
+		abstract: abstract,
+	  }).then((response) => {
+		setSubmitValid(response.success);
+
+		if(response.success) {
+			setSubmitMessage("Article submitted for moderation.");
+		} else {
+			setSubmitMessage("Failed to submit article.");
+		}
+	  });
     } else {
-      console.log("Form has errors. Please correct them.");
+		setSubmitValid(false);
+		setSubmitMessage("Form has errors. Please correct them.");
     }
   };
 
@@ -170,6 +159,9 @@ const NewDiscussion = () => {
       <h1 style={{ textAlign: "center" }}>
         Submit a new article in the SPEED Database
       </h1>
+	  {submitMessage !== undefined && (
+		<Popup message={submitMessage} success={submitValid}/>
+	  )}
       <form className={formStyles.form} onSubmit={submitNewArticle}>
         <label htmlFor="title">Title:</label>
         <input
@@ -315,7 +307,6 @@ const NewDiscussion = () => {
         <button className={formStyles.formItem} type="submit">
           Submit
         </button>
-        <div>{submitMessage}</div>
       </form>
     </div>
   );
