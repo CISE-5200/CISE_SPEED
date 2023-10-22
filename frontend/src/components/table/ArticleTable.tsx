@@ -3,17 +3,17 @@ import SortableTable, {DisplayFunction} from "./SortableTable";
 export interface ArticlesInterface {	
 	title: string;
 	authors: string;
-	date: Date;
 	journal: string;
-	volume: number;
-	issue: number;
-	pageRange: [number, number];
+	year: string;
+	source: string;
 	doi: string;
-
-	claim: string;
-	evidence: string;
-
+	participant: string;
 	method: string;
+	claim: string;
+	result: string;
+	researchType: string;
+	abstract: string;
+	type: string;
 }
 
 export type ArticlesProps = {
@@ -28,15 +28,17 @@ const ArticleTable = (props: {articles: ArticlesInterface[] | undefined, actions
 	const headers: { key: keyof ArticlesInterface; label: string; display?: DisplayFunction | undefined }[] = [
 		{ key: "title", label: "Title" },
 		{ key: "authors", label: "Authors", display: (authors: string[]) => authors.join(", ") },
-		{ key: "date", label: "Publication Date", display: (date: Date) => `${new Date(date).toLocaleDateString("en-NZ")}` },
 		{ key: "journal", label: "Journal" },
-		{ key: "volume", label: "Volume" },
-		{ key: "issue", label: "Issue" },
-		{ key: "pageRange", label: "Pages", display: (pages: [number, number]) => pages[0] + " \u2012 " + pages[1]},
+		{ key: "year", label: "Year" },
+		{ key: "source", label: "Source" },
 		{ key: "doi", label: "DOI" },
+		{ key: "participant", label: "Participant" },
+		{ key: "method", label: "Method" },
 		{ key: "claim", label: "Claim" },
-		{ key: "evidence", label: "Evidence" },
-		{ key: "method", label: "Method" }
+		{ key: "result", label: "Result" },
+		{ key: "researchType", label: "Research Type" },
+		{ key: "abstract", label: "Abstract" },
+		{ key: "type", label: "Type" }
 	];
 
 	const filteredArticles = articles?.filter((article) => query === undefined || query(article));

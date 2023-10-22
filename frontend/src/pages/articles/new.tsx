@@ -1,10 +1,24 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import formStyles from "../../styles/Form.module.scss";
 import axios from "axios";
 import BACKEND_URL from "@/global";
 import { article } from "@/schemas/article.schema";
+import { RequestType, makeRequest, useRequest } from "@/lib/auth";
+import Popup from "@/components/popup/Popup";
+
+interface Method {
+  id: string;
+  name: string;
+};
 
 const NewDiscussion = () => {
+  const methodsResponse = useRequest('/method/all', RequestType.GET);
+  const [methods, setMethods] = useState<Method[]>();
+
+  useEffect(() => {
+    setMethods(methodsResponse.data?.methods);
+  }, [methodsResponse.data]);
+  
   const [title, setTitle] = useState("");
   const [authors, setAuthors] = useState<string[]>([""]);
   const [year, setYear] = useState<number>(1990);
@@ -18,7 +32,8 @@ const NewDiscussion = () => {
   const [abstract, setAbstract] = useState("");
   const [participant, setParticipant] = useState("");
 
-  const [submitMessage, setSubmitMessage] = useState("");
+  const [submitMessage, setSubmitMessage] = useState<string | undefined>();
+  const [submitValid, setSubmitValid] = useState<boolean>();
 
   const [errors, setErrors] = useState({
     title: "",
@@ -135,22 +150,20 @@ const NewDiscussion = () => {
     console.log(submissionObject);
 
     if (validateForm()) {
-      console.log("Form is valid and can be submitted");
-      setSubmitMessage("Article submitted for moderation.");
-      // Submit data
-      axios
-        .post(`${BACKEND_URL}/submission/submit`, {
-          ...submissionObject,
-        })
-        .then((response) => {
-          let data = response.data;
-        });
-      setTimeout(() => {
-        //reset submitted message
-        setSubmitMessage("");
-      }, 3000); // Hide the message after 3 seconds
+      makeRequest('/submission/submit', RequestType.POST, {
+        ...submissionObject
+      }).then((response) => {
+        setSubmitValid(response.success);
+
+        if(response.success) {
+          setSubmitMessage("Article submitted for moderation.");
+        } else {
+          setSubmitMessage("Failed to submit article.");
+        }
+      });
     } else {
-      console.log("Form has errors. Please correct them.");
+      setSubmitValid(false);
+      setSubmitMessage("Form has errors. Please correct them.");
     }
   };
 
@@ -174,6 +187,9 @@ const NewDiscussion = () => {
       <h1 style={{ textAlign: "center" }}>
         Submit a new article in the SPEED Database
       </h1>
+      {submitMessage !== undefined && (
+		    <Popup message={submitMessage} success={submitValid}/>
+	    )}
       <form className={formStyles.form} onSubmit={submitNewArticle}>
         <div className={formStyles.error}>{errors.title}</div>
         <label htmlFor="title">Title:</label>
@@ -295,9 +311,9 @@ const NewDiscussion = () => {
           }}
         >
           <option value="">Select Method</option>
-          <option value="TDD">TDD</option>
-          <option value="Mob Programming">Mob Progarmming</option>
-          <option value="Automated Testing">Automated Testing</option>
+          {methods?.map((method) => (
+            <option key={method.id} value={method.id}>{method.name}</option>
+          ))}
         </select>
         <div className={formStyles.error}>{errors.research}</div>
         <label htmlFor="research">Research Type:</label>
@@ -330,7 +346,6 @@ const NewDiscussion = () => {
         <button className={formStyles.formItem} type="submit">
           Submit
         </button>
-        <div>{submitMessage}</div>
       </form>
     </div>
   );

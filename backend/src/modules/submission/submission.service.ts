@@ -9,9 +9,11 @@ export class SubmissionService {
     @InjectModel(Submission.name) private submissionModel: Model<Submission>,
   ) {}
 
-  async create(createSubDto: CreateArticleDTO): Promise<Submission> {
+  async create(createSubDto: CreateArticleDTO): Promise<boolean> {
     const createdSub = new this.submissionModel(createSubDto);
-    return createdSub.save();
+    createdSub.save();
+
+    return true;
   }
 
   async findAll(): Promise<Submission[]> {
