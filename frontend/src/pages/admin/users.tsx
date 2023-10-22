@@ -1,5 +1,5 @@
 import SortableTable, { DisplayFunction } from "@/components/table/SortableTable";
-import { Request, RequestType, Role, User, makeAuthRequest, useAuthRequest } from "@/lib/auth";
+import { RequestType, Role, User, makeAuthRequest, useAuthRequest } from "@/lib/auth";
 import { useState, useEffect } from "react";
 import Popup from "@/components/popup/Popup";
 
