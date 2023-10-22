@@ -35,14 +35,17 @@ export class ArticleService {
   }
 
   async update(id: string, dto: CreateArticleDTO): Promise<boolean> {
-    let article = await this.articleModel.findOne({ _id: id }).exec();
+    let article = await this.articleModel.findOne({ _id: dto._ID }).exec();
 
+    console.log('ok');
     if (!article) {
       return false;
     }
 
+    console.log(id);
+    console.log(dto);
     return (
-      (await this.articleModel.updateOne({ _id: id }, dto).exec()).modifiedCount == 1
+      (await this.articleModel.updateOne({ article }, dto).exec()).modifiedCount == 1
     );
   }
   async findThenDestroy(id): Promise<Article> {
