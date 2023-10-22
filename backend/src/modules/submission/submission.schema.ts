@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument, Types } from "mongoose";
+import { HydratedDocument } from "mongoose";
 
 export type SubmissionDocument = HydratedDocument<Submission>;
 
@@ -37,6 +37,9 @@ export class Submission {
 
   @Prop({ required: true })
   abstract: string;
+
+  @Prop({ required: true })
+  participant: string;
 }
 
 export const SubmissionSchema = SchemaFactory.createForClass(Submission);

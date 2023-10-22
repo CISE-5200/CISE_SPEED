@@ -13,6 +13,8 @@ export class CreateArticleDTO {
 
   DOI: string;
 
+  participant: string;
+
   method: string;
 
   claim: string;

@@ -12,8 +12,7 @@ const PopulatedNavBar = () => {
       <NavItem route="/">SPEED</NavItem>
 
       <NavItem end>{"\u0000"}</NavItem>
-      <NavItem route="/moderation">Moderation </NavItem>
-      <NavItem route="/analyst">Analyst </NavItem>
+
       <NavItem route="/search">Search</NavItem>
 
       <NavItem dropdown route="/articles">
