@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { HydratedDocument } from "mongoose";
 
@@ -38,6 +37,7 @@ export class Submission {
 
   @Prop({ required: true })
   abstract: string;
+
   @Prop({ required: true })
   participant: string;
 }
