@@ -1,5 +1,6 @@
 export class CreateArticleDTO {
   readonly _ID: string;
+  readonly _id?: string;
 
   title: string;
 

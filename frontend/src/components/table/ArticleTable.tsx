@@ -1,6 +1,7 @@
 import SortableTable, {DisplayFunction} from "./SortableTable";
 
-export interface ArticlesInterface {	
+export interface ArticlesInterface {
+	_id?: string;	
 	title: string;
 	authors: string;
 	journal: string;
