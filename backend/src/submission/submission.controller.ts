@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Res } from "@nestjs/common";
 import { CreateArticleDTO } from "../dto/create-Article.dto";
 import { SubmissionService } from "../modules/submission/submission.service";
-import { handle } from "src/global";
+import { handle } from "../global";
 
 @Controller("submission")
 export class SubmissionController {

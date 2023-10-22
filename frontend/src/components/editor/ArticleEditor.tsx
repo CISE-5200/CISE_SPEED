@@ -41,6 +41,7 @@ const ArticleEditor = (props: ArticleEditorProps) => {
 
     const onSubmitArticle = () => {
         props.onSubmit({
+            id: props.article?.id,
             title: title,
             authors: authors,
             journal: journal,

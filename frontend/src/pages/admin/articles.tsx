@@ -28,6 +28,7 @@ const AdminArticleTable = (props: AdminArticleTableProps) => {
 
   const onEditedArticleSaved = (newArticle: ArticlesInterface) => {
     makeAuthRequest("/article/update", RequestType.POST, props.adminUser, {
+      _id: newArticle.id,
       ...newArticle
     }).then((response) => {
       setSuccess(response.success);
