@@ -1,21 +1,25 @@
 export class CreateArticleDTO {
+  readonly _ID: string;
+
   title: string;
 
-  authers: string[];
+  authors: string[];
 
   journalName: string;
 
   pubYear: string;
 
-  volume: number;
-
-  number: number;
-
-  pages: [number, number];
+  source: string;
 
   DOI: string;
 
-  keywords: string[];
+  method: string;
+
+  claim: string;
+
+  result: string;
+
+  researchType: string;
 
   abstract: string;
 }

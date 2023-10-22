@@ -48,6 +48,7 @@ th {
 .reviewTable {
   border: #fff 2px solid;
   width: 50%;
+  justify-content: center;
 }
 .similarList {
   width: 50%;
@@ -86,4 +87,8 @@ th {
   background-color: lightblue;
   color: white;
   font-weight: bold;
+}
+.analystInput {
+  width: 90%;
+  height: 30%;
 }

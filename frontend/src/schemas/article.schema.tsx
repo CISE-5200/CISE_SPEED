@@ -1,6 +1,5 @@
-export class CreateArticleDTO {
+export type article = {
   readonly _ID: string;
-
   title: string;
 
   authors: string[];
@@ -22,5 +21,6 @@ export class CreateArticleDTO {
   researchType: string;
 
   abstract: string;
+
   type: string;
-}
+};

@@ -2,8 +2,7 @@ import { Model } from "mongoose";
 import { Injectable, Query } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { RejSubmission } from "./rejSubmission.schema";
-import { CreateSubDTO } from "../../dto/create-Sub.dto";
-
+import { CreateArticleDTO } from "src/dto/create-Article.dto";
 @Injectable()
 export class RejSubmissionService {
   constructor(
@@ -11,7 +10,7 @@ export class RejSubmissionService {
     private rejSubmissionModel: Model<RejSubmission>,
   ) {}
 
-  async create(createSubDto: CreateSubDTO): Promise<RejSubmission> {
+  async create(createSubDto: CreateArticleDTO): Promise<RejSubmission> {
     const createdSub = new this.rejSubmissionModel(createSubDto);
     return createdSub.save();
   }

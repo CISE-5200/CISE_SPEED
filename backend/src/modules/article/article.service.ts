@@ -6,7 +6,9 @@ import { CreateArticleDTO } from "../../dto/create-Article.dto";
 
 @Injectable()
 export class ArticleService {
-  constructor( @InjectModel(Article.name) private articleModel: Model<Article>) {}
+  constructor(
+    @InjectModel(Article.name) private articleModel: Model<Article>,
+  ) {}
 
   async create(dto: CreateArticleDTO): Promise<boolean> {
     const createdArticle = new this.articleModel(dto);
@@ -23,9 +25,11 @@ export class ArticleService {
 
   async findByTitleOrDOI(title: string, doi: string): Promise<Article[]> {
     console.log("Received title:", title, "Received DOI:", doi);
-    const results = await this.articleModel.find({
-      $or: [{ title: title }, { doi: doi }],
-    }).exec();
+    const results = await this.articleModel
+      .find({
+        $or: [{ title: title }, { doi: doi }],
+      })
+      .exec();
     console.log("Query results:", results);
     return results;
   }
@@ -33,11 +37,23 @@ export class ArticleService {
   async update(id: number, dto: CreateArticleDTO): Promise<boolean> {
     let article = await this.articleModel.findOne({ id: id }).exec();
 
-    if(!article)
-    {
+    if (!article) {
       return false;
     }
 
-    return (await this.articleModel.updateOne({ id: id }).exec()).modifiedCount == 1;
+    return (
+      (await this.articleModel.updateOne({ id: id }).exec()).modifiedCount == 1
+    );
+  }
+  async findThenDestroy(id): Promise<Article> {
+    const result = this.articleModel.findOneAndDelete({ _id: id }).exec();
+    if (result) {
+      const resultObject = result;
+      delete (await resultObject)._id;
+      delete (await resultObject).__v;
+      console.log(resultObject);
+      return resultObject;
+    }
+    return null;
   }
 }
