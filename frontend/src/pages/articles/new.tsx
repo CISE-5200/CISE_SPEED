@@ -31,6 +31,7 @@ const NewDiscussion = () => {
     research: "",
     participant: "",
     abstract: "",
+    method: "",
   });
 
   const validateForm = () => {
@@ -45,6 +46,7 @@ const NewDiscussion = () => {
       research: "",
       participant: "",
       abstract: "",
+      method: "",
     };
 
     let isValid = true;
@@ -102,6 +104,10 @@ const NewDiscussion = () => {
       newErrors.participant = "Participant is required";
       isValid = false;
     }
+    if (method === "") {
+      newErrors.method = "Method is required";
+      isValid = false;
+    }
 
     setErrors(newErrors);
     return isValid;
@@ -119,7 +125,7 @@ const NewDiscussion = () => {
       DOI: doi,
       method: method,
       claim: claim,
-      result: result,
+      result: "unclear",
       researchType: research,
       abstract: abstract,
       _ID: "",
@@ -277,6 +283,7 @@ const NewDiscussion = () => {
             setClaim(event.target.value);
           }}
         />
+        <div className={formStyles.error}>{errors.method}</div>
         <div className={formStyles.error}>{errors.claim}</div>
         <label htmlFor="method">Select Method:</label>
         <select
@@ -287,6 +294,7 @@ const NewDiscussion = () => {
             setMethod(event.target.value);
           }}
         >
+          <option value="">Select Method</option>
           <option value="TDD">TDD</option>
           <option value="Mob Programming">Mob Progarmming</option>
           <option value="Automated Testing">Automated Testing</option>
