@@ -55,26 +55,28 @@ export class ModeratorController {
     const submission = await this.submissionService.findThenDestroy(_id._ID);
     const jsonSub = (submission as any).toObject();
     delete jsonSub.__v;
-    console.log(jsonSub);
     this.acceptedService.create(await jsonSub);
   }
   @Post("/deny") async denySubmission(@Body() _id) {
     const submission = await this.submissionService.findThenDestroy(_id._ID);
     const jsonSub = (submission as any).toObject();
     delete jsonSub.__v;
-    console.log(jsonSub);
     this.rejectedService.create(await jsonSub);
   }
   @Get("/demo") async demo() {
     this.submissionService.create({
-      title: "The Effects of AI on Human Cognition",
-      authors: ["John Doe", "Jane Smith", "Alex Johnson"],
-      date: "2023-10-15",
-      journal: "Journal of Cognitive Science",
-      volume: 45,
-      issue: 3,
-      pageRange: [122, 139],
-      doi: "10.12345/jcogs.2023.45.3.01",
+      title: "Sample Title 1",
+      authors: ["Author 1", "Author 2"],
+      journalName: "Journal 1",
+      pubYear: "2022",
+      source: "Source 1",
+      DOI: "DOI 1",
+      method: "Method 1",
+      claim: "Claim 1",
+      result: "Result 1",
+      researchType: "Research Type 1",
+      abstract: "Abstract 1",
+      _ID: "",
     });
   }
   @Get("/similar/") async getSimilar(
@@ -87,11 +89,15 @@ export class ModeratorController {
       return {
         title: object.title,
         authors: object.authors,
-        date: object.date,
-        journal: object.journal,
-        volume: object.volume,
-        issue: object.issue,
-        doi: object.doi,
+        journalName: object.journalName,
+        pubYear: object.pubYear,
+        source: object.source,
+        DOI: object.DOI,
+        method: object.method,
+        claim: object.claim,
+        result: object.result,
+        researchType: object.researchType,
+        abstract: object.abstract,
         type: "accepted",
       };
     });
@@ -101,11 +107,15 @@ export class ModeratorController {
     ).map((object) => ({
       title: object.title,
       authors: object.authors,
-      date: object.date,
-      journal: object.journal,
-      volume: object.volume,
-      issue: object.issue,
-      doi: object.doi,
+      journalName: object.journalName,
+      pubYear: object.pubYear,
+      source: object.source,
+      DOI: object.DOI,
+      method: object.method,
+      claim: object.claim,
+      result: object.result,
+      researchType: object.researchType,
+      abstract: object.abstract,
       type: "rejected",
     }));
 
@@ -114,16 +124,19 @@ export class ModeratorController {
     ).map((object) => ({
       title: object.title,
       authors: object.authors,
-      date: object.date,
-      journal: object.journal,
-      volume: object.volume,
-      issue: object.issue,
-      doi: object.doi,
+      journalName: object.journalName,
+      pubYear: object.pubYear,
+      source: object.source,
+      DOI: object.DOI,
+      method: object.method,
+      claim: object.claim,
+      result: object.result,
+      researchType: object.researchType,
+      abstract: object.abstract,
       type: "article",
     }));
 
     const mergedResults = [...acceptedSubs, ...rejectedSubs, ...articles];
     return mergedResults;
-    // return { acceptedSubs, rejectedSubs, articles };
   }
 }
