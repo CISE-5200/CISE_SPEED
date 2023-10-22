@@ -140,5 +140,4 @@ export class ModeratorController {
     const mergedResults = [...acceptedSubs, ...rejectedSubs, ...articles];
     return mergedResults;
   }
-  */
 }
