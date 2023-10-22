@@ -3,7 +3,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { article } from "@/schemas/article.schema";
 import axios from "axios";
 import "../../styles/globals.scss";
-const BACKEND = "http://localhost:3001";
+import BACKEND_URL from "@/global";
 
 export default function analyst() {
   const [submissionData, setSubmissionData] = useState<article[]>([]);
@@ -16,7 +16,7 @@ export default function analyst() {
 
   const getSubmissionData = async () => {
     try {
-      const response = await axios.get(`${BACKEND}/analyst/`);
+      const response = await axios.get(`${BACKEND_URL}/analyst/`);
       setSubmissionData(await response.data.submissions);
     } catch (error) {
       console.log(error);
@@ -26,7 +26,7 @@ export default function analyst() {
   const handleApprove = async (_id: string) => {
     try {
       console.log({ ...selectedPage });
-      await axios.post(`${BACKEND}/analyst/submit/`, { ...selectedPage });
+      await axios.post(`${BACKEND_URL}/analyst/submit/`, { ...selectedPage });
       getSubmissionData();
       setModerationSection(true);
       setSelectedPage(undefined);
