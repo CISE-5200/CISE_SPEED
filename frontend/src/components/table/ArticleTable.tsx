@@ -4,7 +4,7 @@ export interface ArticlesInterface {
 	title: string;
 	authors: string;
 	journal: string;
-	year: string;
+	pubYear: string;
 	source: string;
 	doi: string;
 	participant: string;
@@ -29,7 +29,7 @@ const ArticleTable = (props: {articles: ArticlesInterface[] | undefined, actions
 		{ key: "title", label: "Title" },
 		{ key: "authors", label: "Authors", display: (authors: string[]) => authors.join(", ") },
 		{ key: "journal", label: "Journal" },
-		{ key: "year", label: "Year" },
+		{ key: "pubYear", label: "Year" },
 		{ key: "source", label: "Source" },
 		{ key: "doi", label: "DOI" },
 		{ key: "participant", label: "Participant" },
