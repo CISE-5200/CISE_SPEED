@@ -1,7 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
 import formStyles from "../../styles/Form.module.scss";
-import axios from "axios";
-import BACKEND_URL from "@/global";
 import { article } from "@/schemas/article.schema";
 import { RequestType, makeRequest, useRequest } from "@/lib/auth";
 import Popup from "@/components/popup/Popup";
