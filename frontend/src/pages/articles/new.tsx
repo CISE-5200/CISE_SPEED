@@ -5,7 +5,7 @@ import BACKEND_URL from "@/global";
 
 const NewDiscussion = () => {
 	const [title, setTitle] = useState("");
-	const [authors, setAuthors] = useState<string[]>([]);
+	const [authors, setAuthors] = useState<string[]>([""]);
 	const [year, setYear] = useState<number>(1990);
 	const [journal, setJournal] = useState("");
 	const [source, setSource] = useState("");
@@ -52,7 +52,7 @@ const NewDiscussion = () => {
 		  isValid = false;
 		}
 	
-		if (authors.some(author => author.trim() === '')) {
+		if (authors.some(author => author.trim() === '') || (authors.length < 1)) {
 			// Check if any author is empty
 			newErrors.authors ='At least one author is required';
 			isValid = false;
@@ -166,8 +166,8 @@ const NewDiscussion = () => {
 	};
 	// Return the full form
 	return (
-		<div className="container">
-			<h1>New Article</h1>
+		<div className={formStyles.submitForm}>
+			<h1 style={{textAlign: "center"}}>Submit a new article in the SPEED Database</h1>
 			<form className={formStyles.form} onSubmit={submitNewArticle}>
 				<label htmlFor="title">Title:</label>
 				<input
@@ -262,7 +262,7 @@ const NewDiscussion = () => {
 				/>
 				<div className={formStyles.error}>{errors.claim}</div>
 				<label htmlFor="method">Select Method:</label>
-				<select id="method" name="method" onChange={(event) => {setMethod(event.target.value)}}>
+				<select className={formStyles.formItem} id="method" name="method" onChange={(event) => {setMethod(event.target.value)}}>
 					<option value="TDD">TDD</option>
 					<option value="Mob Programming">Mob Progarmming</option>
 					<option value="Automated Testing">Automated Testing</option>
@@ -278,6 +278,7 @@ const NewDiscussion = () => {
 						setResearch(event.target.value);
 					}}
 				/>
+				<div className={formStyles.error}>{errors.research}</div>
 				<label htmlFor="abstract">Abstract:</label>
                 <textarea
                     className={formStyles.formTextArea}

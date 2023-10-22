@@ -8,24 +8,36 @@ export type SubmissionDocument = HydratedDocument<Submission>;
 export class Submission {
   @Prop()
   title: string;
+
   @Prop()
   authors: string[];
+
   @Prop()
-  year: number;
+  journalName: string;
+
   @Prop()
-  journal: string;
+  pubYear: string;
+
+  @Prop()
+  source: string;
+
+  @Prop()
+  DOI: string;
+
   @Prop()
   method: string;
+
   @Prop()
   claim: string;
+
   @Prop()
   result: string;
+
   @Prop()
   researchType: string;
+
   @Prop()
-  participant: string;
-  @Prop()
-  status: string;
+  abstract: string;
 }
 
 export const SubmissionSchema = SchemaFactory.createForClass(Submission);
