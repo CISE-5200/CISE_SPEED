@@ -73,11 +73,11 @@ const SearchPage = () => {
 			}
 			else
 			{
-				setFilteredArticlesByYear(filteredArticles.filter((article) => article?.date?.getFullYear() === parseInt(event.currentTarget.value)));
+				setFilteredArticlesByYear(filteredArticles.filter((article) => !isNaN(Number(article?.year)) && Number(article?.year) === parseInt(event.currentTarget.value)));
 			}
 		};
 
-		const filteredArticlesYears = filteredArticles.filter((article) => !isNaN(article?.date?.getFullYear())).map((article) => article?.date?.getFullYear()).filter(onlyUnique);
+		const filteredArticlesYears = filteredArticles.filter((article) => !isNaN(Number(article?.year))).map((article) => article?.year).filter(onlyUnique);
 
 		return (
 			<div className="container">
