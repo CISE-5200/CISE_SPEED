@@ -63,7 +63,7 @@ export class ModeratorController {
     delete jsonSub.__v;
     this.rejectedService.create(await jsonSub);
   }
-  /*
+
   @Get("/demo") async demo() {
     this.submissionService.create({
       title: "Sample Title 1",
