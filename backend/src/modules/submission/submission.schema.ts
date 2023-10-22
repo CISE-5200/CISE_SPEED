@@ -1,43 +1,45 @@
 /* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument} from "mongoose";
+import { HydratedDocument } from "mongoose";
 
 export type SubmissionDocument = HydratedDocument<Submission>;
 
 @Schema()
 export class Submission {
-  @Prop()
+  @Prop({ required: true })
   title: string;
 
-  @Prop()
+  @Prop([String])
   authors: string[];
 
-  @Prop()
+  @Prop({ required: true })
   journalName: string;
 
-  @Prop()
+  @Prop({ required: true })
   pubYear: string;
 
-  @Prop()
+  @Prop({ required: true })
   source: string;
 
-  @Prop()
+  @Prop({ required: true })
   DOI: string;
 
-  @Prop()
+  @Prop({ required: true })
   method: string;
 
-  @Prop()
+  @Prop({ required: true })
   claim: string;
 
-  @Prop()
+  @Prop({ required: true })
   result: string;
 
-  @Prop()
+  @Prop({ required: true })
   researchType: string;
 
-  @Prop()
+  @Prop({ required: true })
   abstract: string;
+  @Prop({ required: true })
+  participant: string;
 }
 
 export const SubmissionSchema = SchemaFactory.createForClass(Submission);

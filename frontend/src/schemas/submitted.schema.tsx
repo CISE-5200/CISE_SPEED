@@ -1,12 +1,25 @@
 export type submission = {
-  readonly _id: string;
+  readonly _ID: string;
   title: string;
+
   authors: string[];
-  date: string;
-  journal: string;
-  volume: number;
-  issue: number;
-  pageRange: [number, number];
-  doi: string;
-  summary: string;
+
+  journalName: string;
+
+  pubYear: string;
+  source: string;
+
+  DOI: string;
+
+  method: string;
+
+  claim: string;
+
+  result: string;
+
+  researchType: string;
+
+  abstract: string;
+
+  type: string;
 };

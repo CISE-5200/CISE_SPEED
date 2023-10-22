@@ -5,22 +5,38 @@ export type ArticleDocument = HydratedDocument<Article>;
 
 @Schema()
 export class Article {
-  @Prop()
+  @Prop({ required: true })
   title: string;
-  @Prop()
+
+  @Prop([String])
   authors: string[];
-  @Prop()
-  date: string;
-  @Prop()
-  journal: string;
-  @Prop()
-  volume: number;
-  @Prop()
-  issue: number;
-  @Prop()
-  pageRange: [number, number];
-  @Prop()
-  doi: string;
+
+  @Prop({ required: true })
+  journalName: string;
+
+  @Prop({ required: true })
+  pubYear: string;
+
+  @Prop({ required: true })
+  source: string;
+
+  @Prop({ required: true })
+  DOI: string;
+
+  @Prop({ required: true })
+  method: string;
+
+  @Prop({ required: true })
+  claim: string;
+
+  @Prop({ required: true })
+  result: string;
+
+  @Prop({ required: true })
+  researchType: string;
+
+  @Prop({ required: true })
+  abstract: string;
 }
 
 export const ArticleSchema = SchemaFactory.createForClass(Article);

@@ -1,12 +1,28 @@
-export class CreateSubDTO {
+export class CreateArticleDTO {
+  readonly _ID: string;
+
   title: string;
+
   authors: string[];
-  year: number;
-  journal: string;
-  method: string;
-  claim: string;
-  result: string;
-  researchType: string;
+
+  journalName: string;
+
+  pubYear: string;
+
+  source: string;
+
+  DOI: string;
+
   participant: string;
-  status: string;
+
+  method: string;
+
+  claim: string;
+
+  result: string;
+
+  researchType: string;
+
+  abstract: string;
+  type: string;
 }

@@ -12,7 +12,8 @@ const PopulatedNavBar = () => {
       <NavItem route="/">SPEED</NavItem>
 
       <NavItem end>{"\u0000"}</NavItem>
-
+      <NavItem route="/moderation">Moderation </NavItem>
+      <NavItem route="/analyst">Analyst </NavItem>
       <NavItem route="/search">Search</NavItem>
 
       <NavItem dropdown route="/articles">
@@ -24,39 +25,30 @@ const PopulatedNavBar = () => {
       </NavItem>
 
       {user === null ? (
-        <NavItem route="/login">
-          Login
-        </NavItem>
+        <NavItem route="/login">Login</NavItem>
       ) : (
         <NavItem dropdown>
           {user.username} <IoMdArrowDropdown />
           <NavDropdown>
             {user.role == Role.ADMIN && (
-              <NavItem route="/admin">
-                Administration
-              </NavItem>
+              <NavItem route="/admin">Administration</NavItem>
             )}
 
-            {user.role == Role.ANALYST || user.role == Role.ADMIN && (
-              <NavItem route="/analyst">
-                Analysis
-              </NavItem>
-            )}
+            {user.role == Role.ANALYST ||
+              (user.role == Role.ADMIN && (
+                <NavItem route="/analyst">Analysis</NavItem>
+              ))}
 
-            {user.role == Role.MODERATOR || user.role == Role.ADMIN && (
-              <NavItem route="/moderation">
-                Moderation
-              </NavItem>
-            )}
+            {user.role == Role.MODERATOR ||
+              (user.role == Role.ADMIN && (
+                <NavItem route="/moderation">Moderation</NavItem>
+              ))}
 
-            <NavItem route="/logout">
-              Log Out
-            </NavItem>
+            <NavItem route="/logout">Log Out</NavItem>
           </NavDropdown>
         </NavItem>
       )}
-      
-      </NavBar>
+    </NavBar>
   );
 };
 export default PopulatedNavBar;
