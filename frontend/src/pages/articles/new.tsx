@@ -8,12 +8,14 @@ const NewDiscussion = () => {
 	const [authors, setAuthors] = useState<string[]>([]);
 	const [year, setYear] = useState<number>(1990);
 	const [journal, setJournal] = useState("");
+	const [source, setSource] = useState("");
+	const [doi, setDoi] = useState("");
 	const [method, setMethod] = useState("");
 	const [claim, setClaim] = useState("");
 	const [result, setResult] = useState("");
 	const [research, setResearch] = useState("");
-	const [participant, setParticipant] = useState("");
-	const [status, setStatus] = useState("");
+	const [abstract, setAbstract] = useState("");
+
 	const [submitMessage, setSubmitMessage] = useState('');
 
 	const [errors, setErrors] = useState({
@@ -21,20 +23,26 @@ const NewDiscussion = () => {
 		authors: '',
 		year: '',
 		journal: '',
+		doi:'',
+		source: '',
 		claim: '',
 		research: '',
 		participant: '',
+		abstract: '',
 	  });
 
 	const validateForm = () => {
 		const newErrors = {
-		  title: '',
-		  authors: '',
-		  year: '',
-		  journal: '',
-		  claim: '',
-		  research: '',
-		  participant: '',
+			title: '',
+			authors: '',
+			year: '',
+			journal: '',
+			doi:'',
+			source: '',
+			claim: '',
+			research: '',
+			participant: '',
+			abstract: '',
 		};
 	
 		let isValid = true;
@@ -49,9 +57,14 @@ const NewDiscussion = () => {
 			newErrors.authors ='At least one author is required';
 			isValid = false;
 		}
+
+		if (journal.trim() === '') {
+			newErrors.journal = 'Journal is required';
+			isValid = false;
+		  }
 	
 		if (year < 1990) {
-		  newErrors.year = 'Publication Year must be earlier than 1990';
+		  newErrors.year = 'Publication year must be earlier than 1990';
 		  isValid = false;
 		}
 	
@@ -66,14 +79,23 @@ const NewDiscussion = () => {
 		}
 	
 		if (research.trim() === '') {
-		  newErrors.research = 'Research Type is required';
+		  newErrors.research = 'Research type is required';
 		  isValid = false;
 		}
+		if (doi.trim() === '') {
+			newErrors.doi = 'Research type is required';
+			isValid = false;
+		  }
 	
-		if (participant.trim() === '') {
-		  newErrors.participant = 'Research Participant Type is required';
+		if (source.trim() === '') {
+		  newErrors.source = 'Source is required';
 		  isValid = false;
 		}
+
+		if (abstract.trim() === '') {
+			newErrors.abstract = 'Abstract is required';
+			isValid = false;
+		  }
 	
 		setErrors(newErrors);
 		return isValid;
@@ -82,7 +104,6 @@ const NewDiscussion = () => {
 	
 	const submitNewArticle = async (event: FormEvent<HTMLFormElement>) => {
 		setResult("Unclear");
-		setStatus("Submitted");
 		event.preventDefault();
 		console.log(
 			JSON.stringify({
@@ -90,11 +111,13 @@ const NewDiscussion = () => {
 				authors,
 				year,
 				journal,
+				source,
+				doi,
 				method,
 				claim,
 				result,
 				research,
-				participant,
+				abstract,
 			})
 		);
 
@@ -105,14 +128,15 @@ const NewDiscussion = () => {
 			axios.post(`${BACKEND_URL}/article/submit`, {
 				title: title,
 				authors: authors,
-				year: year,
 				journal: journal,
+				year: year,
+				source: source,
+				doi: doi,
 				method: method,
 				claim: claim,
 				result: result,
 				researchType: research,
-				participant: participant,
-				status: status,
+				abstract: abstract,
 	
 			}).then((response) => {
 				let data = response.data;
@@ -201,6 +225,30 @@ const NewDiscussion = () => {
 					}}
 				/>
 				<div className={formStyles.error}>{errors.journal}</div>
+				<label htmlFor="source">Source:</label>
+				<input
+					className={formStyles.formItem}
+					type="text"
+					name="source"
+					id="source"
+					value={source}
+					onChange={(event) => {
+						setSource(event.target.value);
+					}}
+				/>
+				<div className={formStyles.error}>{errors.source}</div>
+				<label htmlFor="doi">DOI:</label>
+				<input
+					className={formStyles.formItem}
+					type="text"
+					name="doi"
+					id="doi"
+					value={doi}
+					onChange={(event) => {
+						setDoi(event.target.value);
+					}}
+				/>
+				<div className={formStyles.error}>{errors.doi}</div>
 				<label htmlFor="claim">Claim:</label>
 				<input
 					className={formStyles.formItem}
@@ -230,19 +278,14 @@ const NewDiscussion = () => {
 						setResearch(event.target.value);
 					}}
 				/>
-				<div className={formStyles.error}>{errors.research}</div>
-				<label htmlFor="participant">Reseach Participant type:</label>
-				<input
-					className={formStyles.formItem}
-					type="text"
-					name="participant"
-					id="participant"
-					value={participant}
-					onChange={(event) => {
-						setParticipant(event.target.value);
-					}}
-				/>
-				<div className={formStyles.error}>{errors.participant}</div>
+				<label htmlFor="abstract">Abstract:</label>
+                <textarea
+                    className={formStyles.formTextArea}
+                    name="abstract"
+                    value={abstract}
+                    onChange={(event) => setAbstract(event.target.value)}
+                />
+				<div className={formStyles.error}>{errors.abstract}</div>
 				<button className={formStyles.formItem} type="submit">
 					Submit
 				</button>
