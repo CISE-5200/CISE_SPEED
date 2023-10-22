@@ -28,17 +28,7 @@ const AdminArticleTable = (props: AdminArticleTableProps) => {
 
   const onEditedArticleSaved = (newArticle: ArticlesInterface) => {
     makeAuthRequest("/article/update", RequestType.POST, props.adminUser, {
-      title: "Article Title",
-      authors: ["Article Author"],
-      journalName: "Journal Name",
-      pubYear: "2023",
-      volume: 1,
-      number: 1,
-      pages: [1, 2],
-      DOI: "doi",
-      keywords: ["keyword"],
-      abstract: "abstract",
-      // TODO add other article fields following CreateArticleDTO / UpdateArticleDTO
+      ...newArticle
     }).then((response) => {
       setSuccess(response.success);
 

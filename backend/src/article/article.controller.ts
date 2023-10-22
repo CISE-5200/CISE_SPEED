@@ -35,11 +35,12 @@ export class ArticleController {
     }
 
     @Post("/update") async Update(@Res() response, @Param("token") token, @Body() dto: CreateArticleDTO) {
-        // TODO: check that user has permission to update article.
         await handleAuth(response, this.userService, token, Role.ADMIN, async (_) => {
+            let update = await this.articleService.update(dto._ID, dto);
+
             return {
                 data: {
-                    success: false,
+                    success: update,
                 },
             };
         }, async () => {
