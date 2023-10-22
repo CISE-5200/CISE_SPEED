@@ -42,7 +42,7 @@ export class ArticleService {
     }
 
     return (
-      (await this.articleModel.updateOne({ _id: id }).exec()).modifiedCount == 1
+      (await this.articleModel.updateOne({ _id: id }, dto).exec()).modifiedCount == 1
     );
   }
   async findThenDestroy(id): Promise<Article> {
