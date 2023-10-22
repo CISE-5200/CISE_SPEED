@@ -29,6 +29,7 @@ import { MethodService } from "./modules/method/method.service";
 import { Article, ArticleSchema } from "./modules/article/article.schema";
 import { ArticleController } from "./article/article.controller";
 import { ArticleService } from "./modules/article/article.service";
+import { SubmissionController } from './submission/submission.controller';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { ArticleService } from "./modules/article/article.service";
     ModeratorController,
     AnalystController,
     MethodController,
+    SubmissionController,
   ],
   providers: [
     AppService,

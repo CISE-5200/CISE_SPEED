@@ -23,4 +23,6 @@ export type article = {
   abstract: string;
 
   type: string;
+
+  participant: string;
 };

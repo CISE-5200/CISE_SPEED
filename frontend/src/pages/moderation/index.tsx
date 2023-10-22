@@ -1,15 +1,15 @@
 // pages/index.js
 import { useEffect, useState } from "react";
-import { submission } from "@/schemas/submitted.schema";
 import axios from "axios";
 import "../../styles/globals.scss";
 import BACKEND_URL from "@/global";
+import { article } from "@/schemas/article.schema";
 
 export default function moderation() {
-  const [submissionData, setSubmissionData] = useState<submission[]>([]);
+  const [submissionData, setSubmissionData] = useState<article[]>([]);
   const [moderationSection, setModerationSection] = useState(true);
-  const [selectedPage, setSelectedPage] = useState<submission>();
-  const [similarItems, setSimilarItems] = useState<submission[]>([]);
+  const [selectedPage, setSelectedPage] = useState<article>();
+  const [similarItems, setSimilarItems] = useState<article[]>([]);
 
   useEffect(() => {
     getSubmissionData();
@@ -61,13 +61,18 @@ export default function moderation() {
             <tr>
               <th>Title</th>
               <th>Authors</th>
-              <th>Date</th>
               <th>Journal</th>
-              <th>Volume</th>
-              <th>Issue</th>
-              <th>Page Range</th>
-              <th>DOI</th>
-              <th>Review</th>
+              <th>Date</th>
+              <th>Source</th>
+              <th>doi</th>
+              <th>Method</th>
+              <th>claims</th>
+              <th>results</th>
+              <th>Research Type</th>
+              <th>participants</th>
+              <th>abstract</th>
+              <th>claims</th>
+              <th>review</th>
             </tr>
           </thead>
           <tbody>
@@ -92,7 +97,9 @@ export default function moderation() {
                   <td>{submission.claim}</td>
                   <td>{submission.result}</td>
                   <td>{submission.researchType}</td>
+                  <td>{submission.participant}</td>
                   <td>{submission.abstract}</td>
+                  <td>{submission.claim}</td>
 
                   <td>
                     <button onClick={() => handleReview(submission._ID)}>
